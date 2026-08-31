@@ -1,0 +1,54 @@
+.product-sidebar {
+  background: #fff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 100px;
+}
+
+.sidebar-title {
+  font-size: 24px;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+.filter-box {
+  margin-bottom: 25px;
+}
+
+.filter-box h5 {
+  margin-bottom: 12px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.form-select {
+  width: 100%;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.price-value {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+.clear-filter {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #dc3545;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.clear-filter:hover {
+  background: #bb2d3b;
+}
