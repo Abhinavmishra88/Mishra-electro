@@ -1,0 +1,29 @@
+.brands-section {
+  padding: 70px 0;
+  background: #f8f9fa;
+}
+
+.brand-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  height: 140px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 8px 25px rgba(0,0,0,.08);
+
+  transition: .3s;
+}
+
+.brand-card:hover {
+  transform: translateY(-8px);
+}
+
+.brand-card img {
+  max-width: 120px;
+  max-height: 60px;
+  object-fit: contain;
+}

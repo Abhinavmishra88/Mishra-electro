@@ -1,0 +1,38 @@
+.checkout-page{
+padding:70px 0;
+}
+
+.checkout-layout{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:30px;
+}
+
+.checkout-card,
+.checkout-summary{
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.summary-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:15px;
+}
+
+.total{
+font-size:22px;
+font-weight:700;
+}
+
+@media(max-width:992px){
+
+.checkout-layout{
+
+grid-template-columns:1fr;
+
+}
+
+}

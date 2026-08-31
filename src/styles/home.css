@@ -1,0 +1,288 @@
+/* ============================
+   GENERAL
+============================ */
+
+body {
+  background: #f8f9fa;
+  font-family: "Poppins", sans-serif;
+}
+
+section {
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 700;
+}
+
+p {
+  color: #6c757d;
+}
+
+/* ============================
+   HERO
+============================ */
+
+.hero-section {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff, #eef5ff);
+}
+
+.hero-section img {
+  transition: .5s;
+}
+
+.hero-section img:hover {
+  transform: scale(1.03);
+}
+
+/* ============================
+   BUTTONS
+============================ */
+
+.btn {
+  border-radius: 50px;
+  transition: .3s;
+}
+
+.btn-primary {
+  background: #0d6efd;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #0b5ed7;
+  transform: translateY(-3px);
+}
+
+.btn-warning:hover,
+.btn-light:hover,
+.btn-outline-primary:hover {
+  transform: translateY(-3px);
+}
+
+/* ============================
+   CATEGORY CARD
+============================ */
+
+.category-card {
+  border-radius: 18px;
+  transition: .35s;
+  cursor: pointer;
+  background: #fff;
+}
+
+.category-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(0,0,0,.12);
+}
+
+.category-card i {
+  transition: .35s;
+}
+
+.category-card:hover i {
+  transform: scale(1.15);
+}
+
+/* ============================
+   PRODUCT CARD
+============================ */
+
+.product-card {
+  border: none;
+  border-radius: 18px;
+  transition: .35s;
+  overflow: hidden;
+}
+.products-grid{
+
+    row-gap:35px;
+
+    column-gap:30px;
+
+}
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,0,0,.12);
+}
+
+.product-card img {
+  transition: .4s;
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
+}
+
+/* ============================
+   WHY CHOOSE US
+============================ */
+
+.card {
+  border-radius: 18px;
+  transition: .35s;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,.12);
+}
+
+.card i {
+  transition: .3s;
+}
+
+.card:hover i {
+  transform: scale(1.15);
+}
+
+/* ============================
+   STATS
+============================ */
+
+.bg-primary h2 {
+  font-size: 42px;
+}
+
+.bg-primary p {
+  color: rgba(255,255,255,.9);
+}
+
+/* ============================
+   TESTIMONIAL
+============================ */
+
+.text-warning {
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+/* ============================
+   NEWSLETTER
+============================ */
+
+.input-group input {
+  border-radius: 40px 0 0 40px;
+  padding: 14px;
+}
+
+.input-group button {
+  border-radius: 0 40px 40px 0;
+  padding: 14px 28px;
+}
+
+/* ============================
+   SECTION TITLE
+============================ */
+
+.section-title {
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: "";
+  width: 80px;
+  height: 4px;
+  background: #0d6efd;
+  display: block;
+  margin: 12px auto;
+  border-radius: 5px;
+}
+
+/* ============================
+   IMAGE
+============================ */
+
+img {
+  max-width: 100%;
+}
+
+/* ============================
+   SPACING
+============================ */
+
+.py-5 {
+  padding-top: 5rem !important;
+  padding-bottom: 5rem !important;
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+
+@media (max-width: 991px) {
+
+  .hero-section {
+    text-align: center;
+  }
+
+  .hero-section img {
+    margin-top: 40px;
+    max-height: 400px;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  .category-card {
+    padding: 20px;
+  }
+
+  .bg-primary h2 {
+    font-size: 32px;
+  }
+
+}
+.product-title{
+
+    min-height:60px;
+
+}
+
+.product-description{
+
+    min-height:55px;
+
+}
+
+@media (max-width: 576px) {
+
+  .hero-section {
+    min-height: auto;
+    padding: 60px 0;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  .input-group input,
+  .input-group button {
+    width: 100%;
+    border-radius: 50px;
+    margin: 5px 0;
+  }
+
+}

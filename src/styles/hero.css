@@ -1,0 +1,477 @@
+/* =========================================================
+   MISHRA ELECTRO
+   PROFESSIONAL HERO SECTION
+========================================================= */
+
+.hero-section {
+  width: 100%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #f8fbff 50%,
+      #eef5ff 100%
+    );
+
+  overflow: hidden;
+
+  border-bottom: 1px solid #edf0f4;
+}
+
+
+/* =========================================================
+   HERO CONTAINER
+========================================================= */
+
+.hero-container {
+  width: min(1440px, 100%);
+
+  min-height: 650px;
+
+  margin: 0 auto;
+
+  padding: 60px 50px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.9fr)
+    minmax(0, 1.1fr);
+
+  align-items: center;
+
+  gap: 40px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   LEFT CONTENT
+========================================================= */
+
+.hero-content {
+  position: relative;
+
+  z-index: 2;
+
+  max-width: 600px;
+}
+
+
+/* =========================================================
+   BADGE
+========================================================= */
+
+.hero-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 8px 14px;
+
+  margin-bottom: 22px;
+
+  border: 1px solid #dbeafe;
+
+  border-radius: 50px;
+
+  background: #eff6ff;
+
+  color: #1769d1;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.2px;
+}
+
+.hero-badge-icon {
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.hero-content h1 {
+  margin: 0 0 22px;
+
+  color: #12233f;
+
+  font-family:
+    Inter,
+    Arial,
+    sans-serif;
+
+  font-size: clamp(42px, 4.2vw, 66px);
+
+  font-weight: 800;
+
+  line-height: 1.08;
+
+  letter-spacing: -2px;
+}
+
+.hero-content h1 span {
+  color: #1769d1;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.hero-description {
+  max-width: 540px;
+
+  margin: 0 0 28px;
+
+  color: #5b6472;
+
+  font-size: 18px;
+
+  line-height: 1.7;
+
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   FEATURES
+========================================================= */
+
+.hero-features {
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 22px;
+
+  margin-bottom: 32px;
+}
+
+.hero-feature {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.hero-feature span {
+  width: 23px;
+  height: 23px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #1769d1;
+
+  color: #ffffff;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.hero-feature p {
+  margin: 0;
+
+  color: #374151;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.hero-buttons {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  flex-wrap: wrap;
+}
+
+.hero-btn {
+  min-height: 50px;
+
+  padding: 0 23px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+/* Primary */
+
+.hero-btn-primary {
+  border: 1px solid #1769d1;
+
+  background: #1769d1;
+
+  color: #ffffff;
+
+  box-shadow:
+    0 8px 20px rgba(23, 105, 209, 0.18);
+}
+
+.hero-btn-primary:hover {
+  background: #0e57b5;
+
+  border-color: #0e57b5;
+
+  color: #ffffff;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 25px rgba(23, 105, 209, 0.25);
+}
+
+.hero-btn-primary span {
+  font-size: 17px;
+}
+
+
+/* Secondary */
+
+.hero-btn-secondary {
+  border: 1px solid #cfd5dd;
+
+  background: #ffffff;
+
+  color: #273244;
+}
+
+.hero-btn-secondary:hover {
+  border-color: #1769d1;
+
+  background: #f5f9ff;
+
+  color: #1769d1;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   RIGHT IMAGE
+========================================================= */
+
+.hero-image-wrapper {
+  width: 100%;
+
+  min-height: 500px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 18px;
+}
+
+.hero-image {
+  display: block;
+
+  width: 100%;
+
+  max-width: 720px;
+
+  height: auto;
+
+  max-height: 570px;
+
+  object-fit: contain;
+
+  object-position: center;
+
+  filter:
+    drop-shadow(
+      0 18px 35px rgba(15, 23, 42, 0.08)
+    );
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .hero-container {
+    min-height: 580px;
+
+    padding: 50px 30px;
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(0, 1fr);
+
+    gap: 25px;
+  }
+
+  .hero-content h1 {
+    font-size: 48px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+  }
+
+  .hero-image-wrapper {
+    min-height: 430px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .hero-container {
+    min-height: auto;
+
+    padding: 45px 22px 55px;
+
+    grid-template-columns: 1fr;
+
+    gap: 35px;
+  }
+
+  .hero-content {
+    max-width: 100%;
+
+    text-align: center;
+  }
+
+  .hero-badge {
+    margin-bottom: 18px;
+  }
+
+  .hero-content h1 {
+    font-size: 42px;
+
+    letter-spacing: -1.5px;
+  }
+
+  .hero-description {
+    margin-left: auto;
+    margin-right: auto;
+
+    font-size: 16px;
+  }
+
+  .hero-features {
+    justify-content: center;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-image-wrapper {
+    min-height: auto;
+  }
+
+  .hero-image {
+    max-height: 430px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 500px) {
+
+  .hero-container {
+    padding: 35px 16px 45px;
+  }
+
+  .hero-content h1 {
+    font-size: 34px;
+
+    line-height: 1.12;
+  }
+
+  .hero-description {
+    font-size: 15px;
+
+    line-height: 1.6;
+  }
+
+  .hero-features {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    width: fit-content;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    gap: 12px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+
+    width: 100%;
+  }
+
+  .hero-btn {
+    width: 100%;
+  }
+
+  .hero-image {
+    max-height: 330px;
+  }
+
+}

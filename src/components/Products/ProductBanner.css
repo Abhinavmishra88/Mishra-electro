@@ -1,0 +1,25 @@
+.product-banner{
+
+padding:70px 0;
+
+background:linear-gradient(135deg,#0D6EFD,#0052CC);
+
+color:white;
+
+text-align:center;
+
+}
+
+.product-banner h1{
+
+font-size:48px;
+
+margin-bottom:10px;
+
+}
+
+.product-banner p{
+
+font-size:18px;
+
+}
