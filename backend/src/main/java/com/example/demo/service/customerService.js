@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/customers";
+const API_URL = "https://mishra-electro.onrender.com/api/customers";
 
 
 // =====================================================

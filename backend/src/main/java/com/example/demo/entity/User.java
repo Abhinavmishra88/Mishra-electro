@@ -45,7 +45,7 @@ public class User {
 
     @Column(
         name = "profile_picture",
-        columnDefinition = "LONGTEXT"
+        columnDefinition = "TEXT"
     )
     private String profilePicture;
 

@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +20,6 @@ import com.example.demo.service.ProductService;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ProductController {
 
     private final ProductService productService;
@@ -60,6 +58,7 @@ public class ProductController {
                 productService.getProductById(id);
 
         if (product.isEmpty()) {
+
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(
@@ -70,7 +69,9 @@ public class ProductController {
                     );
         }
 
-        return ResponseEntity.ok(product.get());
+        return ResponseEntity.ok(
+                product.get()
+        );
     }
 
     // =====================================================
@@ -146,6 +147,18 @@ public class ProductController {
         // BASIC VALIDATION
         // -------------------------------------------------
 
+        if (product == null) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            java.util.Map.of(
+                                    "message",
+                                    "Product data is required"
+                            )
+                    );
+        }
+
         if (product.getName() == null ||
                 product.getName().trim().isEmpty()) {
 
@@ -210,6 +223,10 @@ public class ProductController {
                 product.getCategory().trim()
         );
 
+        // -------------------------------------------------
+        // CREATE
+        // -------------------------------------------------
+
         Product savedProduct =
                 productService.createProduct(product);
 
@@ -235,6 +252,18 @@ public class ProductController {
         // -------------------------------------------------
         // BASIC VALIDATION
         // -------------------------------------------------
+
+        if (product == null) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            java.util.Map.of(
+                                    "message",
+                                    "Product data is required"
+                            )
+                    );
+        }
 
         if (product.getName() == null ||
                 product.getName().trim().isEmpty()) {
@@ -289,7 +318,7 @@ public class ProductController {
         }
 
         // -------------------------------------------------
-        // UPDATE
+        // CLEAN VALUES
         // -------------------------------------------------
 
         product.setName(
@@ -299,6 +328,10 @@ public class ProductController {
         product.setCategory(
                 product.getCategory().trim()
         );
+
+        // -------------------------------------------------
+        // UPDATE
+        // -------------------------------------------------
 
         Optional<Product> updatedProduct =
                 productService.updateProduct(

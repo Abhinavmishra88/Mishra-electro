@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +17,6 @@ import com.example.demo.repository.OrderRepository;
 
 @RestController
 @RequestMapping("/api/customers")
-@CrossOrigin(origins = "*")
 public class CustomerMigrationController {
 
     private final CustomerRepository customerRepository;
@@ -55,11 +53,9 @@ public class CustomerMigrationController {
             List<Order> orders =
                     orderRepository.findAll();
 
-
             int created = 0;
             int updated = 0;
             int skipped = 0;
-
 
             // =================================================
             // PREVENT PROCESSING SAME EMAIL MULTIPLE TIMES
@@ -67,7 +63,6 @@ public class CustomerMigrationController {
 
             Set<String> processedEmails =
                     new HashSet<>();
-
 
             // =================================================
             // PROCESS ORDERS
@@ -80,14 +75,12 @@ public class CustomerMigrationController {
                     continue;
                 }
 
-
                 // ---------------------------------------------
                 // GET EMAIL
                 // ---------------------------------------------
 
                 String email =
                         order.getCustomerEmail();
-
 
                 // ---------------------------------------------
                 // EMAIL REQUIRED
@@ -102,11 +95,9 @@ public class CustomerMigrationController {
                     continue;
                 }
 
-
                 email =
                         email.trim()
                                 .toLowerCase();
-
 
                 // ---------------------------------------------
                 // DON'T PROCESS SAME EMAIL TWICE
@@ -120,11 +111,7 @@ public class CustomerMigrationController {
                     continue;
                 }
 
-
-                processedEmails.add(
-                        email
-                );
-
+                processedEmails.add(email);
 
                 // =================================================
                 // FIND EXISTING CUSTOMER
@@ -136,7 +123,6 @@ public class CustomerMigrationController {
                                         email
                                 )
                                 .orElse(null);
-
 
                 // =================================================
                 // CREATE CUSTOMER
@@ -158,7 +144,6 @@ public class CustomerMigrationController {
                     updated++;
                 }
 
-
                 // =================================================
                 // NAME
                 // =================================================
@@ -175,7 +160,6 @@ public class CustomerMigrationController {
                                     .trim()
                     );
                 }
-
 
                 // =================================================
                 // PHONE
@@ -194,7 +178,6 @@ public class CustomerMigrationController {
                     );
                 }
 
-
                 // =================================================
                 // ADDRESS
                 // =================================================
@@ -211,7 +194,6 @@ public class CustomerMigrationController {
                                     .trim()
                     );
                 }
-
 
                 // =================================================
                 // CITY
@@ -230,7 +212,6 @@ public class CustomerMigrationController {
                     );
                 }
 
-
                 // =================================================
                 // STATE
                 // =================================================
@@ -247,7 +228,6 @@ public class CustomerMigrationController {
                                     .trim()
                     );
                 }
-
 
                 // =================================================
                 // PINCODE
@@ -266,7 +246,6 @@ public class CustomerMigrationController {
                     );
                 }
 
-
                 // =================================================
                 // SAVE CUSTOMER
                 // =================================================
@@ -276,10 +255,9 @@ public class CustomerMigrationController {
                 );
             }
 
-
-            // =================================================
+            // =====================================================
             // SUCCESS RESPONSE
-            // =================================================
+            // =====================================================
 
             return ResponseEntity.ok(
 
@@ -302,15 +280,13 @@ public class CustomerMigrationController {
                     )
             );
 
-
         } catch (Exception e) {
 
             e.printStackTrace();
 
-
-            // =================================================
+            // =====================================================
             // ERROR RESPONSE
-            // =================================================
+            // =====================================================
 
             return ResponseEntity
                     .status(

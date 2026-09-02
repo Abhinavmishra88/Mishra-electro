@@ -5,32 +5,33 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     private final UserRepository userRepository;
-
 
     // =====================================================
     // CONSTRUCTOR
     // =====================================================
 
     public UserController(
-            UserRepository userRepository
-    ) {
+            UserRepository userRepository) {
 
         this.userRepository =
                 userRepository;
-
     }
-
 
     // =====================================================
     // GET USER BY EMAIL
@@ -38,8 +39,7 @@ public class UserController {
 
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getUserByEmail(
-            @PathVariable String email
-    ) {
+            @PathVariable String email) {
 
         try {
 
@@ -48,7 +48,6 @@ public class UserController {
                             .findByEmailIgnoreCase(email)
                             .orElse(null);
 
-
             if (user == null) {
 
                 return ResponseEntity
@@ -59,14 +58,11 @@ public class UserController {
                                         "User not found"
                                 )
                         );
-
             }
-
 
             return ResponseEntity.ok(
                     createUserResponse(user)
             );
-
 
         } catch (Exception e) {
 
@@ -78,10 +74,8 @@ public class UserController {
                                     "Failed to get user"
                             )
                     );
-
         }
     }
-
 
     // =====================================================
     // GET USER BY ID
@@ -89,8 +83,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
 
         try {
 
@@ -99,7 +92,6 @@ public class UserController {
                             .findById(id)
                             .orElse(null);
 
-
             if (user == null) {
 
                 return ResponseEntity
@@ -110,14 +102,11 @@ public class UserController {
                                         "User not found"
                                 )
                         );
-
             }
-
 
             return ResponseEntity.ok(
                     createUserResponse(user)
             );
-
 
         } catch (Exception e) {
 
@@ -129,10 +118,8 @@ public class UserController {
                                     "Failed to get user"
                             )
                     );
-
         }
     }
-
 
     // =====================================================
     // UPDATE PROFILE
@@ -141,8 +128,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProfile(
             @PathVariable Long id,
-            @RequestBody User request
-    ) {
+            @RequestBody User request) {
 
         try {
 
@@ -150,7 +136,6 @@ public class UserController {
                     userRepository
                             .findById(id)
                             .orElse(null);
-
 
             if (existingUser == null) {
 
@@ -162,9 +147,7 @@ public class UserController {
                                         "User not found"
                                 )
                         );
-
             }
-
 
             // -------------------------------------------------
             // NAME
@@ -178,9 +161,7 @@ public class UserController {
                 existingUser.setName(
                         request.getName().trim()
                 );
-
             }
-
 
             // -------------------------------------------------
             // PHONE
@@ -190,7 +171,6 @@ public class UserController {
                     request.getPhone()
             );
 
-
             // -------------------------------------------------
             // ADDRESS
             // -------------------------------------------------
@@ -198,7 +178,6 @@ public class UserController {
             existingUser.setAddress(
                     request.getAddress()
             );
-
 
             // -------------------------------------------------
             // CITY
@@ -208,7 +187,6 @@ public class UserController {
                     request.getCity()
             );
 
-
             // -------------------------------------------------
             // STATE
             // -------------------------------------------------
@@ -216,7 +194,6 @@ public class UserController {
             existingUser.setState(
                     request.getState()
             );
-
 
             // -------------------------------------------------
             // PINCODE
@@ -226,7 +203,6 @@ public class UserController {
                     request.getPincode()
             );
 
-
             // -------------------------------------------------
             // PROFILE PICTURE
             // -------------------------------------------------
@@ -235,17 +211,18 @@ public class UserController {
                     request.getProfilePicture()
             );
 
+            // -------------------------------------------------
+            // SAVE
+            // -------------------------------------------------
 
             User savedUser =
                     userRepository.save(
                             existingUser
                     );
 
-
             return ResponseEntity.ok(
                     createUserResponse(savedUser)
             );
-
 
         } catch (Exception e) {
 
@@ -259,10 +236,8 @@ public class UserController {
                                     "Failed to update profile"
                             )
                     );
-
         }
     }
-
 
     // =====================================================
     // CHANGE PASSWORD
@@ -271,8 +246,7 @@ public class UserController {
     @PutMapping("/{id}/password")
     public ResponseEntity<?> changePassword(
             @PathVariable Long id,
-            @RequestBody Map<String, String> request
-    ) {
+            @RequestBody Map<String, String> request) {
 
         try {
 
@@ -280,7 +254,6 @@ public class UserController {
                     userRepository
                             .findById(id)
                             .orElse(null);
-
 
             if (user == null) {
 
@@ -292,17 +265,13 @@ public class UserController {
                                         "User not found"
                                 )
                         );
-
             }
-
 
             String currentPassword =
                     request.get("currentPassword");
 
-
             String newPassword =
                     request.get("newPassword");
-
 
             // -------------------------------------------------
             // VALIDATE CURRENT PASSWORD
@@ -321,11 +290,10 @@ public class UserController {
                                         "Current password is required"
                                 )
                         );
-
             }
 
-
             if (
+                    user.getPassword() == null ||
                     !user.getPassword()
                             .equals(currentPassword)
             ) {
@@ -338,9 +306,7 @@ public class UserController {
                                         "Current password is incorrect"
                                 )
                         );
-
             }
-
 
             // -------------------------------------------------
             // VALIDATE NEW PASSWORD
@@ -359,9 +325,7 @@ public class UserController {
                                         "New password must contain at least 6 characters"
                                 )
                         );
-
             }
-
 
             // -------------------------------------------------
             // SAVE PASSWORD
@@ -371,9 +335,7 @@ public class UserController {
                     newPassword
             );
 
-
             userRepository.save(user);
-
 
             return ResponseEntity.ok(
                     Map.of(
@@ -381,7 +343,6 @@ public class UserController {
                             "Password changed successfully"
                     )
             );
-
 
         } catch (Exception e) {
 
@@ -395,10 +356,8 @@ public class UserController {
                                     "Failed to change password"
                             )
                     );
-
         }
     }
-
 
     // =====================================================
     // DELETE USER
@@ -406,8 +365,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
 
         try {
 
@@ -423,12 +381,9 @@ public class UserController {
                                         "User not found"
                                 )
                         );
-
             }
 
-
             userRepository.deleteById(id);
-
 
             return ResponseEntity.ok(
                     Map.of(
@@ -436,7 +391,6 @@ public class UserController {
                             "User deleted successfully"
                     )
             );
-
 
         } catch (Exception e) {
 
@@ -450,10 +404,8 @@ public class UserController {
                                     "Failed to delete user"
                             )
                     );
-
         }
     }
-
 
     // =====================================================
     // USER RESPONSE
@@ -465,66 +417,55 @@ public class UserController {
         Map<String, Object> response =
                 new HashMap<>();
 
-
         response.put(
                 "id",
                 user.getId()
         );
-
 
         response.put(
                 "name",
                 user.getName()
         );
 
-
         response.put(
                 "email",
                 user.getEmail()
         );
-
 
         response.put(
                 "phone",
                 user.getPhone()
         );
 
-
         response.put(
                 "role",
                 user.getRole()
         );
-
 
         response.put(
                 "profilePicture",
                 user.getProfilePicture()
         );
 
-
         response.put(
                 "address",
                 user.getAddress()
         );
-
 
         response.put(
                 "city",
                 user.getCity()
         );
 
-
         response.put(
                 "state",
                 user.getState()
         );
 
-
         response.put(
                 "pincode",
                 user.getPincode()
         );
-
 
         // IMPORTANT:
         // Password is intentionally NOT returned.

@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,14 +13,9 @@ import com.example.demo.service.RazorpayPaymentService;
 
 @RestController
 @RequestMapping("/api/payment")
-@CrossOrigin(origins = {
-        "http://localhost:5173",
-        "http://127.0.0.1:5173"
-})
 public class RazorpayPaymentController {
 
     private final RazorpayPaymentService razorpayPaymentService;
-
 
     // =====================================================
     // CONSTRUCTOR
@@ -33,7 +27,6 @@ public class RazorpayPaymentController {
         this.razorpayPaymentService =
                 razorpayPaymentService;
     }
-
 
     // =====================================================
     // CREATE RAZORPAY ORDER
@@ -65,7 +58,6 @@ public class RazorpayPaymentController {
                         ));
             }
 
-
             // -------------------------------------------------
             // CONVERT AMOUNT
             // -------------------------------------------------
@@ -90,7 +82,6 @@ public class RazorpayPaymentController {
                         ));
             }
 
-
             // -------------------------------------------------
             // VALIDATE AMOUNT
             // -------------------------------------------------
@@ -106,7 +97,6 @@ public class RazorpayPaymentController {
                         ));
             }
 
-
             // -------------------------------------------------
             // CREATE RAZORPAY ORDER
             // -------------------------------------------------
@@ -114,7 +104,6 @@ public class RazorpayPaymentController {
             Map<String, Object> razorpayOrder =
                     razorpayPaymentService
                             .createRazorpayOrder(amount);
-
 
             // -------------------------------------------------
             // RESPONSE
@@ -152,7 +141,6 @@ public class RazorpayPaymentController {
         }
     }
 
-
     // =====================================================
     // VERIFY RAZORPAY PAYMENT
     //
@@ -178,9 +166,8 @@ public class RazorpayPaymentController {
             String razorpaySignature =
                     request.get("razorpaySignature");
 
-
             // -------------------------------------------------
-            // VALIDATE
+            // VALIDATE ORDER ID
             // -------------------------------------------------
 
             if (razorpayOrderId == null ||
@@ -197,6 +184,9 @@ public class RazorpayPaymentController {
                         );
             }
 
+            // -------------------------------------------------
+            // VALIDATE PAYMENT ID
+            // -------------------------------------------------
 
             if (razorpayPaymentId == null ||
                     razorpayPaymentId.isBlank()) {
@@ -212,6 +202,9 @@ public class RazorpayPaymentController {
                         );
             }
 
+            // -------------------------------------------------
+            // VALIDATE SIGNATURE
+            // -------------------------------------------------
 
             if (razorpaySignature == null ||
                     razorpaySignature.isBlank()) {
@@ -227,7 +220,6 @@ public class RazorpayPaymentController {
                         );
             }
 
-
             // -------------------------------------------------
             // VERIFY SIGNATURE
             // -------------------------------------------------
@@ -239,7 +231,6 @@ public class RazorpayPaymentController {
                                     razorpayPaymentId,
                                     razorpaySignature
                             );
-
 
             // -------------------------------------------------
             // PAYMENT VERIFIED
@@ -260,7 +251,6 @@ public class RazorpayPaymentController {
                         )
                 );
             }
-
 
             // -------------------------------------------------
             // PAYMENT NOT VERIFIED

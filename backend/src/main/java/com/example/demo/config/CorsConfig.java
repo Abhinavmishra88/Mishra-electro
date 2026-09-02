@@ -18,29 +18,40 @@ public class CorsConfig {
 
                 registry.addMapping("/**")
 
-                        // React Vite frontend
+                        // =====================================================
+                        // FRONTEND ORIGINS
+                        // =====================================================
+                        // Local React/Vite development
                         .allowedOrigins(
                                 "http://localhost:5173",
                                 "http://127.0.0.1:5173"
                         )
 
-                        // HTTP methods
+                        // =====================================================
+                        // HTTP METHODS
+                        // =====================================================
                         .allowedMethods(
                                 "GET",
                                 "POST",
                                 "PUT",
                                 "DELETE",
-                                "OPTIONS",
-                                "PATCH"
+                                "PATCH",
+                                "OPTIONS"
                         )
 
-                        // Request headers
+                        // =====================================================
+                        // REQUEST HEADERS
+                        // =====================================================
                         .allowedHeaders("*")
 
-                        // Allow cookies / authorization headers
+                        // =====================================================
+                        // CREDENTIALS
+                        // =====================================================
                         .allowCredentials(true)
 
-                        // Cache preflight response
+                        // =====================================================
+                        // PREFLIGHT CACHE
+                        // =====================================================
                         .maxAge(3600);
             }
         };

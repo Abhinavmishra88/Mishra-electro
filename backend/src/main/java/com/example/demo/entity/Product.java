@@ -27,16 +27,16 @@ public class Product {
     @Column(name = "old_price")
     private Double oldPrice;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String image;
+    @Column(columnDefinition = "TEXT")
+        private String image;
 
     private Integer stock;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String specifications;
+    @Column(columnDefinition = "TEXT")
+        private String specifications;
 
     public Product() {
     }

@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +23,6 @@ import com.example.demo.repository.OrderRepository;
 
 @RestController
 @RequestMapping("/api/customers")
-@CrossOrigin(origins = "*")
 public class CustomerController {
 
     private final CustomerRepository customerRepository;
@@ -37,7 +35,6 @@ public class CustomerController {
         this.customerRepository = customerRepository;
         this.orderRepository = orderRepository;
     }
-
 
     // =====================================================
     // GET ALL CUSTOMERS
@@ -61,9 +58,7 @@ public class CustomerController {
 
         try {
 
-            // ---------------------------------------------
             // PAGE VALIDATION
-            // ---------------------------------------------
 
             if (page < 0) {
                 page = 0;
@@ -77,14 +72,10 @@ public class CustomerController {
                 size = 100;
             }
 
-
             Pageable pageable =
                     PageRequest.of(page, size);
 
-
-            // ---------------------------------------------
             // GET CUSTOMERS
-            // ---------------------------------------------
 
             Page<Customer> result =
                     customerRepository
@@ -92,10 +83,7 @@ public class CustomerController {
                                     pageable
                             );
 
-
-            // ---------------------------------------------
             // RESPONSE
-            // ---------------------------------------------
 
             return ResponseEntity.ok(
                     Map.of(
@@ -148,7 +136,6 @@ public class CustomerController {
         }
     }
 
-
     // =====================================================
     // SEARCH CUSTOMERS
     //
@@ -165,13 +152,12 @@ public class CustomerController {
     // - To date
     //
     // GET:
-    //
     // /api/customers/search
     //
     // Example:
-    //
     // /api/customers/search?query=rahul
     //
+    // With dates:
     // /api/customers/search
     //      ?query=rahul
     //      &fromDate=2026-08-01
@@ -211,9 +197,7 @@ public class CustomerController {
 
         try {
 
-            // ---------------------------------------------
             // PAGE VALIDATION
-            // ---------------------------------------------
 
             if (page < 0) {
                 page = 0;
@@ -227,28 +211,19 @@ public class CustomerController {
                 size = 100;
             }
 
-
-            // ---------------------------------------------
             // SEARCH TEXT
-            // ---------------------------------------------
 
             String search =
                     query == null
                             ? ""
                             : query.trim();
 
-
-            // ---------------------------------------------
             // DATE VARIABLES
-            // ---------------------------------------------
 
             LocalDateTime fromDateTime = null;
             LocalDateTime toDateTime = null;
 
-
-            // ---------------------------------------------
             // FROM DATE
-            // ---------------------------------------------
 
             if (
                     fromDate != null &&
@@ -264,16 +239,10 @@ public class CustomerController {
                         parsedFromDate.atStartOfDay();
             }
 
-
-            // ---------------------------------------------
             // TO DATE
             //
-            // We add one day because the repository uses:
-            //
-            // o.orderDate < :toDate
-            //
-            // This makes the selected To date inclusive.
-            // ---------------------------------------------
+            // Add one day so the selected To date
+            // remains inclusive.
 
             if (
                     toDate != null &&
@@ -291,10 +260,7 @@ public class CustomerController {
                                 .atStartOfDay();
             }
 
-
-            // ---------------------------------------------
             // DATE VALIDATION
-            // ---------------------------------------------
 
             if (
                     fromDateTime != null &&
@@ -319,10 +285,7 @@ public class CustomerController {
                         );
             }
 
-
-            // ---------------------------------------------
             // PAGEABLE
-            // ---------------------------------------------
 
             Pageable pageable =
                     PageRequest.of(
@@ -330,10 +293,7 @@ public class CustomerController {
                             size
                     );
 
-
-            // ---------------------------------------------
             // SEARCH
-            // ---------------------------------------------
 
             Page<Customer> result =
                     customerRepository
@@ -344,10 +304,7 @@ public class CustomerController {
                                     pageable
                             );
 
-
-            // ---------------------------------------------
             // RESPONSE
-            // ---------------------------------------------
 
             return ResponseEntity.ok(
                     Map.of(
@@ -424,12 +381,10 @@ public class CustomerController {
         }
     }
 
-
     // =====================================================
     // GET CUSTOMER BY ID
     //
     // GET:
-    //
     // /api/customers/1
     //
     // Returns:
@@ -443,9 +398,7 @@ public class CustomerController {
 
         try {
 
-            // ---------------------------------------------
             // VALIDATE ID
-            // ---------------------------------------------
 
             if (id == null) {
 
@@ -464,20 +417,14 @@ public class CustomerController {
                         );
             }
 
-
-            // ---------------------------------------------
             // FIND CUSTOMER
-            // ---------------------------------------------
 
             Customer customer =
                     customerRepository
                             .findById(id)
                             .orElse(null);
 
-
-            // ---------------------------------------------
             // CUSTOMER NOT FOUND
-            // ---------------------------------------------
 
             if (customer == null) {
 
@@ -496,15 +443,11 @@ public class CustomerController {
                         );
             }
 
-
-            // ---------------------------------------------
             // FIND CUSTOMER ORDERS
             //
             // Orders are connected using customer email.
-            // ---------------------------------------------
 
             List<Order> orders = List.of();
-
 
             if (
                     customer.getEmail() != null &&
@@ -520,10 +463,7 @@ public class CustomerController {
                                 );
             }
 
-
-            // ---------------------------------------------
             // RESPONSE
-            // ---------------------------------------------
 
             return ResponseEntity.ok(
                     Map.of(
