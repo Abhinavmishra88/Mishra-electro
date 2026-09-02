@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,19 +25,13 @@ import com.example.demo.repository.OrderRepository;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "http://localhost:5173")
 public class OrderController {
 
     private final OrderRepository orderRepository;
 
-    // =========================================================
-    // CONSTRUCTOR
-    // =========================================================
-
     public OrderController(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
-
 
     // =========================================================
     // GET ALL ORDERS
@@ -46,7 +39,6 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<?> getAllOrders() {
-
         try {
 
             List<Order> orders =
@@ -67,15 +59,13 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // GET ORDER BY ID
     // =========================================================
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
 
         try {
 
@@ -86,14 +76,10 @@ public class OrderController {
 
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order not found"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Order not found"
+                        ));
             }
 
             return ResponseEntity.ok(
@@ -113,15 +99,13 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // GET ORDER BY ORDER NUMBER
     // =========================================================
 
     @GetMapping("/number/{orderNumber}")
     public ResponseEntity<?> getOrderByNumber(
-            @PathVariable String orderNumber
-    ) {
+            @PathVariable String orderNumber) {
 
         try {
 
@@ -129,14 +113,11 @@ public class OrderController {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order number is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order number is required"
+                        ));
             }
 
             Order order =
@@ -148,14 +129,11 @@ public class OrderController {
 
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order not found"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
             }
 
             return ResponseEntity.ok(order);
@@ -173,15 +151,13 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // GET ORDERS BY CUSTOMER EMAIL
     // =========================================================
 
     @GetMapping("/customer/{email}")
     public ResponseEntity<?> getOrdersByCustomerEmail(
-            @PathVariable String email
-    ) {
+            @PathVariable String email) {
 
         try {
 
@@ -189,14 +165,11 @@ public class OrderController {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Customer email is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Customer email is required"
+                        ));
             }
 
             List<Order> orders =
@@ -220,15 +193,13 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // GET ORDERS BY CUSTOMER PHONE
     // =========================================================
 
     @GetMapping("/phone/{phone}")
     public ResponseEntity<?> getOrdersByCustomerPhone(
-            @PathVariable String phone
-    ) {
+            @PathVariable String phone) {
 
         try {
 
@@ -236,14 +207,11 @@ public class OrderController {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Customer phone is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Customer phone is required"
+                        ));
             }
 
             List<Order> orders =
@@ -267,23 +235,13 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // SEARCH CUSTOMERS
-    // =========================================================
-    //
-    // This DOES NOT require searchCustomers()
-    // in OrderRepository.
-    //
-    // It uses findAllByOrderByOrderDateDesc()
-    // and searches in Java.
-    //
     // =========================================================
 
     @GetMapping("/customers/search")
     public ResponseEntity<?> searchCustomers(
-            @RequestParam String query
-    ) {
+            @RequestParam(required = false) String query) {
 
         try {
 
@@ -291,10 +249,8 @@ public class OrderController {
 
                 return ResponseEntity.ok(
                         Map.of(
-                                "success",
-                                true,
-                                "customers",
-                                List.of()
+                                "success", true,
+                                "customers", List.of()
                         )
                 );
             }
@@ -302,22 +258,18 @@ public class OrderController {
             String search =
                     query.trim().toLowerCase();
 
-
             List<Order> allOrders =
                     orderRepository
                             .findAllByOrderByOrderDateDesc();
 
-
             Map<String, Map<String, Object>> customers =
                     new LinkedHashMap<>();
-
 
             for (Order order : allOrders) {
 
                 if (order == null) {
                     continue;
                 }
-
 
                 boolean matches =
                         contains(
@@ -333,36 +285,46 @@ public class OrderController {
                         contains(
                                 order.getCustomerPhone(),
                                 search
+                        )
+                        ||
+                        contains(
+                                order.getAddress(),
+                                search
+                        )
+                        ||
+                        contains(
+                                order.getCity(),
+                                search
+                        )
+                        ||
+                        contains(
+                                order.getState(),
+                                search
+                        )
+                        ||
+                        contains(
+                                order.getPincode(),
+                                search
                         );
-
 
                 if (!matches) {
                     continue;
                 }
 
-
                 String email =
                         order.getCustomerEmail();
 
+                String key =
+                        hasText(email)
+                                ? email.trim().toLowerCase()
+                                : "unknown-" + order.hashCode();
 
-                if (!hasText(email)) {
-                    continue;
-                }
+                Map<String, Object> customer =
+                        customers.get(key);
 
+                if (customer == null) {
 
-                String customerKey =
-                        email.trim().toLowerCase();
-
-
-                // =================================================
-                // CREATE CUSTOMER
-                // =================================================
-
-                if (!customers.containsKey(
-                        customerKey
-                )) {
-
-                    Map<String, Object> customer =
+                    customer =
                             new LinkedHashMap<>();
 
                     customer.put(
@@ -416,47 +378,25 @@ public class OrderController {
                     );
 
                     customers.put(
-                            customerKey,
+                            key,
                             customer
                     );
                 }
 
-
-                Map<String, Object> customer =
-                        customers.get(
-                                customerKey
-                        );
-
-
-                // =================================================
-                // ORDER COUNT
-                // =================================================
-
                 int totalOrders =
-                        ((Number)
-                                customer.get(
-                                        "totalOrders"
-                                ))
-                                .intValue();
-
+                        ((Number) customer.get(
+                                "totalOrders"
+                        )).intValue();
 
                 customer.put(
                         "totalOrders",
                         totalOrders + 1
                 );
 
-
-                // =================================================
-                // TOTAL SPENT
-                // =================================================
-
                 double totalSpent =
-                        ((Number)
-                                customer.get(
-                                        "totalSpent"
-                                ))
-                                .doubleValue();
-
+                        ((Number) customer.get(
+                                "totalSpent"
+                        )).doubleValue();
 
                 if (order.getTotal() != null) {
 
@@ -464,35 +404,24 @@ public class OrderController {
                             order.getTotal();
                 }
 
-
                 customer.put(
                         "totalSpent",
                         totalSpent
                 );
 
-
-                // =================================================
-                // ADD ORDER
-                // =================================================
-
                 @SuppressWarnings("unchecked")
                 List<Order> customerOrders =
-                        (List<Order>)
-                                customer.get(
-                                        "orders"
-                                );
-
+                        (List<Order>) customer.get(
+                                "orders"
+                        );
 
                 customerOrders.add(order);
             }
 
-
             return ResponseEntity.ok(
                     Map.of(
-                            "success",
-                            true,
-                            "customers",
-                            customers.values()
+                            "success", true,
+                            "customers", customers.values()
                     )
             );
 
@@ -509,15 +438,13 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // GET ORDERS BY ORDER STATUS
     // =========================================================
 
     @GetMapping("/status/{status}")
     public ResponseEntity<?> getOrdersByStatus(
-            @PathVariable String status
-    ) {
+            @PathVariable String status) {
 
         try {
 
@@ -525,23 +452,18 @@ public class OrderController {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order status is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order status is required"
+                        ));
             }
-
 
             List<Order> orders =
                     orderRepository
                             .findByOrderStatusOrderByOrderDateDesc(
                                     status.trim().toUpperCase()
                             );
-
 
             return ResponseEntity.ok(orders);
 
@@ -558,15 +480,13 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // GET ORDERS BY PAYMENT STATUS
     // =========================================================
 
     @GetMapping("/payment-status/{status}")
     public ResponseEntity<?> getOrdersByPaymentStatus(
-            @PathVariable String status
-    ) {
+            @PathVariable String status) {
 
         try {
 
@@ -574,23 +494,18 @@ public class OrderController {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Payment status is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Payment status is required"
+                        ));
             }
-
 
             List<Order> orders =
                     orderRepository
                             .findByPaymentStatusOrderByOrderDateDesc(
                                     status.trim().toUpperCase()
                             );
-
 
             return ResponseEntity.ok(orders);
 
@@ -607,15 +522,13 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // GET ORDERS BY APPROVAL STATUS
     // =========================================================
 
     @GetMapping("/approval-status/{status}")
     public ResponseEntity<?> getOrdersByApprovalStatus(
-            @PathVariable String status
-    ) {
+            @PathVariable String status) {
 
         try {
 
@@ -623,23 +536,18 @@ public class OrderController {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Approval status is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Approval status is required"
+                        ));
             }
-
 
             List<Order> orders =
                     orderRepository
                             .findByApprovalStatusOrderByOrderDateDesc(
                                     status.trim().toUpperCase()
                             );
-
 
             return ResponseEntity.ok(orders);
 
@@ -656,15 +564,13 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // GET ORDERS BY DELIVERY STATUS
     // =========================================================
 
     @GetMapping("/delivery-status/{status}")
     public ResponseEntity<?> getOrdersByDeliveryStatus(
-            @PathVariable String status
-    ) {
+            @PathVariable String status) {
 
         try {
 
@@ -672,23 +578,18 @@ public class OrderController {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Delivery status is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Delivery status is required"
+                        ));
             }
-
 
             List<Order> orders =
                     orderRepository
                             .findByDeliveryStatusOrderByOrderDateDesc(
                                     status.trim().toUpperCase()
                             );
-
 
             return ResponseEntity.ok(orders);
 
@@ -705,40 +606,26 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // CREATE ORDER
     // =========================================================
 
     @PostMapping
     public ResponseEntity<?> createOrder(
-            @RequestBody Order order
-    ) {
+            @RequestBody Order order) {
 
         try {
-
-            // -----------------------------------------------------
-            // VALIDATE
-            // -----------------------------------------------------
 
             if (order == null) {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order data is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order data is required"
+                        ));
             }
-
-
-            // -----------------------------------------------------
-            // CUSTOMER EMAIL
-            // -----------------------------------------------------
 
             if (!hasText(
                     order.getCustomerEmail()
@@ -746,25 +633,16 @@ public class OrderController {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Customer email is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Customer email is required"
+                        ));
             }
 
-
-            order.setCustomerEmail(
-                    order.getCustomerEmail().trim()
-            );
-
-
-            // -----------------------------------------------------
+            // -------------------------------------------------
             // ORDER NUMBER
-            // -----------------------------------------------------
+            // -------------------------------------------------
 
             if (!hasText(
                     order.getOrderNumber()
@@ -775,10 +653,9 @@ public class OrderController {
                 );
             }
 
-
-            // -----------------------------------------------------
+            // -------------------------------------------------
             // ORDER DATE
-            // -----------------------------------------------------
+            // -------------------------------------------------
 
             if (order.getOrderDate() == null) {
 
@@ -787,10 +664,9 @@ public class OrderController {
                 );
             }
 
-
-            // -----------------------------------------------------
+            // -------------------------------------------------
             // ORDER STATUS
-            // -----------------------------------------------------
+            // -------------------------------------------------
 
             if (!hasText(
                     order.getOrderStatus()
@@ -799,20 +675,11 @@ public class OrderController {
                 order.setOrderStatus(
                         "PLACED"
                 );
-
-            } else {
-
-                order.setOrderStatus(
-                        order.getOrderStatus()
-                                .trim()
-                                .toUpperCase()
-                );
             }
 
-
-            // -----------------------------------------------------
+            // -------------------------------------------------
             // PAYMENT STATUS
-            // -----------------------------------------------------
+            // -------------------------------------------------
 
             if (!hasText(
                     order.getPaymentStatus()
@@ -821,34 +688,11 @@ public class OrderController {
                 order.setPaymentStatus(
                         "PENDING"
                 );
-
-            } else {
-
-                order.setPaymentStatus(
-                        order.getPaymentStatus()
-                                .trim()
-                                .toUpperCase()
-                );
             }
 
-
-            // -----------------------------------------------------
-            // DELIVERY STATUS
-            // -----------------------------------------------------
-
-            if (!hasText(
-                    order.getDeliveryStatus()
-            )) {
-
-                order.setDeliveryStatus(
-                        "PENDING"
-                );
-            }
-
-
-            // -----------------------------------------------------
+            // -------------------------------------------------
             // APPROVAL STATUS
-            // -----------------------------------------------------
+            // -------------------------------------------------
 
             if (!hasText(
                     order.getApprovalStatus()
@@ -859,30 +703,40 @@ public class OrderController {
                 );
             }
 
+            // -------------------------------------------------
+            // DELIVERY STATUS
+            // -------------------------------------------------
 
-            // -----------------------------------------------------
+            if (!hasText(
+                    order.getDeliveryStatus()
+            )) {
+
+                order.setDeliveryStatus(
+                        "PENDING"
+                );
+            }
+
+            // -------------------------------------------------
             // SUBTOTAL
-            // -----------------------------------------------------
+            // -------------------------------------------------
 
             if (order.getSubtotal() == null) {
 
                 order.setSubtotal(0.0);
             }
 
-
-            // -----------------------------------------------------
+            // -------------------------------------------------
             // SHIPPING CHARGE
-            // -----------------------------------------------------
+            // -------------------------------------------------
 
             if (order.getShippingCharge() == null) {
 
                 order.setShippingCharge(0.0);
             }
 
-
-            // -----------------------------------------------------
+            // -------------------------------------------------
             // TOTAL
-            // -----------------------------------------------------
+            // -------------------------------------------------
 
             if (order.getTotal() == null) {
 
@@ -892,32 +746,24 @@ public class OrderController {
                 );
             }
 
-
-            // -----------------------------------------------------
-            // UPDATED AT
-            // -----------------------------------------------------
+            // -------------------------------------------------
+            // UPDATED TIME
+            // -------------------------------------------------
 
             order.setUpdatedAt(
                     LocalDateTime.now()
             );
 
-
-            // -----------------------------------------------------
+            // -------------------------------------------------
             // SAVE
-            // -----------------------------------------------------
+            // -------------------------------------------------
 
             Order savedOrder =
                     orderRepository.save(order);
 
-
-            // -----------------------------------------------------
-            // RESPONSE
-            // -----------------------------------------------------
-
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(savedOrder);
-
 
         } catch (Exception e) {
 
@@ -926,12 +772,299 @@ public class OrderController {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(errorResponse(
-                            "Unable to create order",
+                            "Failed to create order",
                             e
                     ));
         }
     }
 
+    // =========================================================
+    // UPDATE COMPLETE ORDER
+    // =========================================================
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateOrder(
+            @PathVariable Long id,
+            @RequestBody Order updatedOrder) {
+
+        try {
+
+            Optional<Order> optionalOrder =
+                    orderRepository.findById(id);
+
+            if (optionalOrder.isEmpty()) {
+
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
+            }
+
+            if (updatedOrder == null) {
+
+                return ResponseEntity
+                        .badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order data is required"
+                        ));
+            }
+
+            Order existingOrder =
+                    optionalOrder.get();
+
+            // -------------------------------------------------
+            // CUSTOMER
+            // -------------------------------------------------
+
+            existingOrder.setCustomerName(
+                    updatedOrder.getCustomerName()
+            );
+
+            existingOrder.setCustomerEmail(
+                    updatedOrder.getCustomerEmail()
+            );
+
+            existingOrder.setCustomerPhone(
+                    updatedOrder.getCustomerPhone()
+            );
+
+            // -------------------------------------------------
+            // ADDRESS
+            // -------------------------------------------------
+
+            existingOrder.setAddress(
+                    updatedOrder.getAddress()
+            );
+
+            existingOrder.setCity(
+                    updatedOrder.getCity()
+            );
+
+            existingOrder.setState(
+                    updatedOrder.getState()
+            );
+
+            existingOrder.setPincode(
+                    updatedOrder.getPincode()
+            );
+
+            // -------------------------------------------------
+            // SHIPPING
+            // -------------------------------------------------
+
+            existingOrder.setShipping(
+                    updatedOrder.getShipping()
+            );
+
+            if (updatedOrder.getShippingCharge() != null) {
+
+                existingOrder.setShippingCharge(
+                        updatedOrder.getShippingCharge()
+                );
+
+            } else {
+
+                existingOrder.setShippingCharge(0.0);
+            }
+
+            // -------------------------------------------------
+            // PAYMENT
+            // -------------------------------------------------
+
+            existingOrder.setPaymentMethod(
+                    updatedOrder.getPaymentMethod()
+            );
+
+            if (hasText(
+                    updatedOrder.getPaymentStatus()
+            )) {
+
+                existingOrder.setPaymentStatus(
+                        updatedOrder
+                                .getPaymentStatus()
+                                .trim()
+                                .toUpperCase()
+                );
+            }
+
+            // -------------------------------------------------
+            // ORDER STATUS
+            // -------------------------------------------------
+
+            if (hasText(
+                    updatedOrder.getOrderStatus()
+            )) {
+
+                existingOrder.setOrderStatus(
+                        updatedOrder
+                                .getOrderStatus()
+                                .trim()
+                                .toUpperCase()
+                );
+            }
+
+            // -------------------------------------------------
+            // APPROVAL
+            // -------------------------------------------------
+
+            if (hasText(
+                    updatedOrder.getApprovalStatus()
+            )) {
+
+                existingOrder.setApprovalStatus(
+                        updatedOrder
+                                .getApprovalStatus()
+                                .trim()
+                                .toUpperCase()
+                );
+            }
+
+            // -------------------------------------------------
+            // DELIVERY
+            // -------------------------------------------------
+
+            if (hasText(
+                    updatedOrder.getDeliveryStatus()
+            )) {
+
+                existingOrder.setDeliveryStatus(
+                        updatedOrder
+                                .getDeliveryStatus()
+                                .trim()
+                                .toUpperCase()
+                );
+            }
+
+            // -------------------------------------------------
+            // SUBTOTAL
+            // -------------------------------------------------
+
+            if (updatedOrder.getSubtotal() != null) {
+
+                existingOrder.setSubtotal(
+                        updatedOrder.getSubtotal()
+                );
+
+            } else if (
+                    existingOrder.getSubtotal() == null
+            ) {
+
+                existingOrder.setSubtotal(0.0);
+            }
+
+            // -------------------------------------------------
+            // TOTAL
+            // -------------------------------------------------
+
+            if (updatedOrder.getTotal() != null) {
+
+                existingOrder.setTotal(
+                        updatedOrder.getTotal()
+                );
+
+            } else {
+
+                double subtotal =
+                        existingOrder.getSubtotal() != null
+                                ? existingOrder.getSubtotal()
+                                : 0.0;
+
+                double shippingCharge =
+                        existingOrder.getShippingCharge() != null
+                                ? existingOrder.getShippingCharge()
+                                : 0.0;
+
+                existingOrder.setTotal(
+                        subtotal + shippingCharge
+                );
+            }
+
+            // -------------------------------------------------
+            // RAZORPAY
+            // -------------------------------------------------
+
+            existingOrder.setRazorpayOrderId(
+                    updatedOrder.getRazorpayOrderId()
+            );
+
+            existingOrder.setRazorpayPaymentId(
+                    updatedOrder.getRazorpayPaymentId()
+            );
+
+            // -------------------------------------------------
+            // ADMIN MESSAGE
+            // -------------------------------------------------
+
+            existingOrder.setAdminMessage(
+                    updatedOrder.getAdminMessage()
+            );
+
+            // -------------------------------------------------
+            // DELIVERY INFORMATION
+            // -------------------------------------------------
+
+            existingOrder.setCurrentLocation(
+                    updatedOrder.getCurrentLocation()
+            );
+
+            existingOrder.setEstimatedDelivery(
+                    updatedOrder.getEstimatedDelivery()
+            );
+
+            existingOrder.setEstimatedDeliveryDate(
+                    updatedOrder.getEstimatedDeliveryDate()
+            );
+
+            existingOrder.setEstimatedDeliveryTime(
+                    updatedOrder.getEstimatedDeliveryTime()
+            );
+
+            existingOrder.setDeliveryPartnerName(
+                    updatedOrder.getDeliveryPartnerName()
+            );
+
+            existingOrder.setDeliveryPartnerPhone(
+                    updatedOrder.getDeliveryPartnerPhone()
+            );
+
+            // -------------------------------------------------
+            // UPDATED AT
+            // -------------------------------------------------
+
+            existingOrder.setUpdatedAt(
+                    LocalDateTime.now()
+            );
+
+            // -------------------------------------------------
+            // SAVE
+            // -------------------------------------------------
+
+            Order savedOrder =
+                    orderRepository.save(
+                            existingOrder
+                    );
+
+            return ResponseEntity.ok(
+                    savedOrder
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse(
+                            "Failed to update order",
+                            e
+                    ));
+        }
+    }
 
     // =========================================================
     // UPDATE ORDER STATUS
@@ -940,70 +1073,40 @@ public class OrderController {
     @PutMapping("/{id}/status")
     public ResponseEntity<?> updateOrderStatus(
             @PathVariable Long id,
-            @RequestBody Map<String, String> request
-    ) {
+            @RequestBody Map<String, String> request) {
 
         try {
 
-            // -----------------------------------------------------
-            // FIND ORDER
-            // -----------------------------------------------------
-
             Optional<Order> optionalOrder =
                     orderRepository.findById(id);
-
 
             if (optionalOrder.isEmpty()) {
 
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order not found"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
             }
 
-
-            // -----------------------------------------------------
-            // VALIDATE REQUEST
-            // -----------------------------------------------------
-
             if (request == null ||
-                    request.get("status") == null ||
-                    request.get("status")
-                            .trim()
-                            .isEmpty()) {
+                    !hasText(request.get("status"))) {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order status is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order status is required"
+                        ));
             }
-
-
-            // -----------------------------------------------------
-            // GET STATUS
-            // -----------------------------------------------------
 
             String status =
                     request.get("status")
                             .trim()
                             .toUpperCase();
-
-
-            // -----------------------------------------------------
-            // VALID STATUSES
-            // -----------------------------------------------------
 
             List<String> validStatuses =
                     List.of(
@@ -1017,145 +1120,70 @@ public class OrderController {
                             "CANCELLED"
                     );
 
-
             if (!validStatuses.contains(status)) {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Invalid order status: "
-                                                + status
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Invalid order status: "
+                                        + status
+                        ));
             }
-
-
-            // -----------------------------------------------------
-            // UPDATE ORDER
-            // -----------------------------------------------------
 
             Order order =
                     optionalOrder.get();
 
-
-            order.setOrderStatus(
-                    status
-            );
-
-
-            // -----------------------------------------------------
-            // KEEP DELIVERY STATUS IN SYNC
-            // -----------------------------------------------------
+            order.setOrderStatus(status);
 
             switch (status) {
 
                 case "PLACED":
-
-                    order.setDeliveryStatus(
-                            "PENDING"
-                    );
-
-                    break;
-
-
                 case "PENDING":
-
-                    order.setDeliveryStatus(
-                            "PENDING"
-                    );
-
+                    order.setDeliveryStatus("PENDING");
                     break;
-
 
                 case "CONFIRMED":
-
-                    order.setDeliveryStatus(
-                            "CONFIRMED"
-                    );
-
+                    order.setDeliveryStatus("CONFIRMED");
                     break;
-
 
                 case "PROCESSING":
-
-                    order.setDeliveryStatus(
-                            "PROCESSING"
-                    );
-
+                    order.setDeliveryStatus("PROCESSING");
                     break;
-
 
                 case "SHIPPED":
-
-                    order.setDeliveryStatus(
-                            "SHIPPED"
-                    );
-
+                    order.setDeliveryStatus("SHIPPED");
                     break;
 
-
                 case "OUT_FOR_DELIVERY":
-
                     order.setDeliveryStatus(
                             "OUT_FOR_DELIVERY"
                     );
-
                     break;
-
 
                 case "DELIVERED":
-
-                    order.setDeliveryStatus(
-                            "DELIVERED"
-                    );
-
+                    order.setDeliveryStatus("DELIVERED");
                     break;
-
 
                 case "CANCELLED":
-
-                    order.setDeliveryStatus(
-                            "CANCELLED"
-                    );
-
+                    order.setDeliveryStatus("CANCELLED");
                     break;
-
 
                 default:
-
                     break;
             }
-
-
-            // -----------------------------------------------------
-            // UPDATED TIME
-            // -----------------------------------------------------
 
             order.setUpdatedAt(
                     LocalDateTime.now()
             );
 
-
-            // -----------------------------------------------------
-            // SAVE
-            // -----------------------------------------------------
-
             Order updatedOrder =
                     orderRepository.save(order);
-
-
-            // -----------------------------------------------------
-            // RESPONSE
-            // -----------------------------------------------------
 
             return ResponseEntity.ok(
                     updatedOrder
             );
-
 
         } catch (Exception e) {
 
@@ -1170,7 +1198,6 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // UPDATE PAYMENT STATUS
     // =========================================================
@@ -1178,70 +1205,40 @@ public class OrderController {
     @PutMapping("/{id}/payment-status")
     public ResponseEntity<?> updatePaymentStatus(
             @PathVariable Long id,
-            @RequestBody Map<String, String> request
-    ) {
+            @RequestBody Map<String, String> request) {
 
         try {
 
-            // -----------------------------------------------------
-            // FIND ORDER
-            // -----------------------------------------------------
-
             Optional<Order> optionalOrder =
                     orderRepository.findById(id);
-
 
             if (optionalOrder.isEmpty()) {
 
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order not found"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
             }
 
-
-            // -----------------------------------------------------
-            // VALIDATE
-            // -----------------------------------------------------
-
             if (request == null ||
-                    request.get("status") == null ||
-                    request.get("status")
-                            .trim()
-                            .isEmpty()) {
+                    !hasText(request.get("status"))) {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Payment status is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Payment status is required"
+                        ));
             }
-
-
-            // -----------------------------------------------------
-            // STATUS
-            // -----------------------------------------------------
 
             String status =
                     request.get("status")
                             .trim()
                             .toUpperCase();
-
-
-            // -----------------------------------------------------
-            // VALID PAYMENT STATUSES
-            // -----------------------------------------------------
 
             List<String> validStatuses =
                     List.of(
@@ -1252,53 +1249,33 @@ public class OrderController {
                             "CANCELLED"
                     );
 
-
             if (!validStatuses.contains(status)) {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Invalid payment status: "
-                                                + status
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Invalid payment status: "
+                                        + status
+                        ));
             }
-
-
-            // -----------------------------------------------------
-            // UPDATE
-            // -----------------------------------------------------
 
             Order order =
                     optionalOrder.get();
 
-
-            order.setPaymentStatus(
-                    status
-            );
-
+            order.setPaymentStatus(status);
 
             order.setUpdatedAt(
                     LocalDateTime.now()
             );
 
-
-            // -----------------------------------------------------
-            // SAVE
-            // -----------------------------------------------------
-
             Order updatedOrder =
                     orderRepository.save(order);
-
 
             return ResponseEntity.ok(
                     updatedOrder
             );
-
 
         } catch (Exception e) {
 
@@ -1313,7 +1290,6 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // UPDATE APPROVAL STATUS
     // =========================================================
@@ -1321,54 +1297,40 @@ public class OrderController {
     @PutMapping("/{id}/approval-status")
     public ResponseEntity<?> updateApprovalStatus(
             @PathVariable Long id,
-            @RequestBody Map<String, String> request
-    ) {
+            @RequestBody Map<String, String> request) {
 
         try {
 
             Optional<Order> optionalOrder =
                     orderRepository.findById(id);
 
-
             if (optionalOrder.isEmpty()) {
 
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order not found"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
             }
 
-
             if (request == null ||
-                    request.get("status") == null ||
-                    request.get("status")
-                            .trim()
-                            .isEmpty()) {
+                    !hasText(request.get("status"))) {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Approval status is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Approval status is required"
+                        ));
             }
-
 
             String status =
                     request.get("status")
                             .trim()
                             .toUpperCase();
-
 
             List<String> validStatuses =
                     List.of(
@@ -1377,36 +1339,26 @@ public class OrderController {
                             "REJECTED"
                     );
 
-
             if (!validStatuses.contains(status)) {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Invalid approval status: "
-                                                + status
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Invalid approval status: "
+                                        + status
+                        ));
             }
-
 
             Order order =
                     optionalOrder.get();
 
-
-            order.setApprovalStatus(
-                    status
-            );
-
+            order.setApprovalStatus(status);
 
             order.setApprovalDate(
                     LocalDateTime.now()
             );
-
 
             if ("APPROVED".equals(status)) {
 
@@ -1414,11 +1366,12 @@ public class OrderController {
                         LocalDateTime.now()
                 );
 
-                order.setRejectionReason(
-                        null
+                order.setRejectionReason(null);
+
+                order.setOrderStatus(
+                        "CONFIRMED"
                 );
             }
-
 
             if ("REJECTED".equals(status)) {
 
@@ -1433,22 +1386,22 @@ public class OrderController {
                             reason.trim()
                     );
                 }
-            }
 
+                order.setOrderStatus(
+                        "CANCELLED"
+                );
+            }
 
             order.setUpdatedAt(
                     LocalDateTime.now()
             );
 
-
             Order updatedOrder =
                     orderRepository.save(order);
-
 
             return ResponseEntity.ok(
                     updatedOrder
             );
-
 
         } catch (Exception e) {
 
@@ -1463,47 +1416,38 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
-    // UPDATE DELIVERY INFORMATION
+    // UPDATE DELIVERY
     // =========================================================
 
     @PutMapping("/{id}/delivery")
     public ResponseEntity<?> updateDelivery(
             @PathVariable Long id,
-            @RequestBody Map<String, String> request
-    ) {
+            @RequestBody Map<String, String> request) {
 
         try {
 
             Optional<Order> optionalOrder =
                     orderRepository.findById(id);
 
-
             if (optionalOrder.isEmpty()) {
 
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order not found"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
             }
-
 
             Order order =
                     optionalOrder.get();
 
-
             if (request != null) {
 
                 if (request.containsKey(
-                        "deliveryStatus"
-                )) {
+                        "deliveryStatus")) {
 
                     order.setDeliveryStatus(
                             request.get(
@@ -1512,10 +1456,8 @@ public class OrderController {
                     );
                 }
 
-
                 if (request.containsKey(
-                        "currentLocation"
-                )) {
+                        "currentLocation")) {
 
                     order.setCurrentLocation(
                             request.get(
@@ -1524,10 +1466,8 @@ public class OrderController {
                     );
                 }
 
-
                 if (request.containsKey(
-                        "estimatedDelivery"
-                )) {
+                        "estimatedDelivery")) {
 
                     order.setEstimatedDelivery(
                             request.get(
@@ -1536,10 +1476,8 @@ public class OrderController {
                     );
                 }
 
-
                 if (request.containsKey(
-                        "estimatedDeliveryDate"
-                )) {
+                        "estimatedDeliveryDate")) {
 
                     order.setEstimatedDeliveryDate(
                             request.get(
@@ -1548,10 +1486,8 @@ public class OrderController {
                     );
                 }
 
-
                 if (request.containsKey(
-                        "estimatedDeliveryTime"
-                )) {
+                        "estimatedDeliveryTime")) {
 
                     order.setEstimatedDeliveryTime(
                             request.get(
@@ -1560,10 +1496,8 @@ public class OrderController {
                     );
                 }
 
-
                 if (request.containsKey(
-                        "deliveryPartnerName"
-                )) {
+                        "deliveryPartnerName")) {
 
                     order.setDeliveryPartnerName(
                             request.get(
@@ -1572,10 +1506,8 @@ public class OrderController {
                     );
                 }
 
-
                 if (request.containsKey(
-                        "deliveryPartnerPhone"
-                )) {
+                        "deliveryPartnerPhone")) {
 
                     order.setDeliveryPartnerPhone(
                             request.get(
@@ -1585,20 +1517,16 @@ public class OrderController {
                 }
             }
 
-
             order.setUpdatedAt(
                     LocalDateTime.now()
             );
 
-
             Order updatedOrder =
                     orderRepository.save(order);
-
 
             return ResponseEntity.ok(
                     updatedOrder
             );
-
 
         } catch (Exception e) {
 
@@ -1613,7 +1541,6 @@ public class OrderController {
         }
     }
 
-
     // =========================================================
     // UPDATE ADMIN MESSAGE
     // =========================================================
@@ -1621,68 +1548,53 @@ public class OrderController {
     @PutMapping("/{id}/admin-message")
     public ResponseEntity<?> updateAdminMessage(
             @PathVariable Long id,
-            @RequestBody Map<String, String> request
-    ) {
+            @RequestBody Map<String, String> request) {
 
         try {
 
             Optional<Order> optionalOrder =
                     orderRepository.findById(id);
 
-
             if (optionalOrder.isEmpty()) {
 
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order not found"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
             }
 
-
             if (request == null ||
-                    request.get("message") == null) {
+                    !hasText(request.get("message"))) {
 
                 return ResponseEntity
                         .badRequest()
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Admin message is required"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Admin message is required"
+                        ));
             }
-
 
             Order order =
                     optionalOrder.get();
 
-
             order.setAdminMessage(
-                    request.get("message")
+                    request.get("message").trim()
             );
-
 
             order.setUpdatedAt(
                     LocalDateTime.now()
             );
 
-
             Order updatedOrder =
                     orderRepository.save(order);
-
 
             return ResponseEntity.ok(
                     updatedOrder
             );
-
 
         } catch (Exception e) {
 
@@ -1697,6 +1609,191 @@ public class OrderController {
         }
     }
 
+    // =========================================================
+    // APPROVE ORDER
+    // =========================================================
+
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<?> approveOrder(
+            @PathVariable Long id) {
+
+        try {
+
+            Optional<Order> optionalOrder =
+                    orderRepository.findById(id);
+
+            if (optionalOrder.isEmpty()) {
+
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
+            }
+
+            Order order =
+                    optionalOrder.get();
+
+            order.setApprovalStatus(
+                    "APPROVED"
+            );
+
+            order.setOrderStatus(
+                    "CONFIRMED"
+            );
+
+            order.setApprovalDate(
+                    LocalDateTime.now()
+            );
+
+            order.setApprovedAt(
+                    LocalDateTime.now()
+            );
+
+            order.setRejectionReason(null);
+
+            order.setUpdatedAt(
+                    LocalDateTime.now()
+            );
+
+            return ResponseEntity.ok(
+                    orderRepository.save(order)
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse(
+                            "Failed to approve order",
+                            e
+                    ));
+        }
+    }
+
+    // =========================================================
+    // REJECT ORDER
+    // =========================================================
+
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<?> rejectOrder(
+            @PathVariable Long id) {
+
+        try {
+
+            Optional<Order> optionalOrder =
+                    orderRepository.findById(id);
+
+            if (optionalOrder.isEmpty()) {
+
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
+            }
+
+            Order order =
+                    optionalOrder.get();
+
+            order.setApprovalStatus(
+                    "REJECTED"
+            );
+
+            order.setOrderStatus(
+                    "CANCELLED"
+            );
+
+            order.setDeliveryStatus(
+                    "CANCELLED"
+            );
+
+            order.setApprovalDate(
+                    LocalDateTime.now()
+            );
+
+            order.setUpdatedAt(
+                    LocalDateTime.now()
+            );
+
+            return ResponseEntity.ok(
+                    orderRepository.save(order)
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse(
+                            "Failed to reject order",
+                            e
+                    ));
+        }
+    }
+
+    // =========================================================
+    // CANCEL ORDER
+    // =========================================================
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelOrder(
+            @PathVariable Long id) {
+
+        try {
+
+            Optional<Order> optionalOrder =
+                    orderRepository.findById(id);
+
+            if (optionalOrder.isEmpty()) {
+
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
+            }
+
+            Order order =
+                    optionalOrder.get();
+
+            order.setOrderStatus(
+                    "CANCELLED"
+            );
+
+            order.setDeliveryStatus(
+                    "CANCELLED"
+            );
+
+            order.setUpdatedAt(
+                    LocalDateTime.now()
+            );
+
+            return ResponseEntity.ok(
+                    orderRepository.save(order)
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse(
+                            "Failed to cancel order",
+                            e
+                    ));
+        }
+    }
 
     // =========================================================
     // DELETE ORDER
@@ -1704,8 +1801,7 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOrder(
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
 
         try {
 
@@ -1713,29 +1809,22 @@ public class OrderController {
 
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body(
-                                Map.of(
-                                        "success",
-                                        false,
-                                        "message",
-                                        "Order not found"
-                                )
-                        );
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Order not found"
+                        ));
             }
-
 
             orderRepository.deleteById(id);
 
-
             return ResponseEntity.ok(
                     Map.of(
-                            "success",
-                            true,
+                            "success", true,
                             "message",
                             "Order deleted successfully"
                     )
             );
-
 
         } catch (Exception e) {
 
@@ -1749,7 +1838,6 @@ public class OrderController {
                     ));
         }
     }
-
 
     // =========================================================
     // GENERATE UNIQUE ORDER NUMBER
@@ -1765,10 +1853,7 @@ public class OrderController {
                     "ME-" +
                     UUID.randomUUID()
                             .toString()
-                            .substring(
-                                    0,
-                                    8
-                            )
+                            .substring(0, 8)
                             .toUpperCase();
 
         } while (
@@ -1780,19 +1865,16 @@ public class OrderController {
         return orderNumber;
     }
 
-
     // =========================================================
     // CHECK TEXT
     // =========================================================
 
     private boolean hasText(
-            String value
-    ) {
+            String value) {
 
         return value != null &&
                 !value.trim().isEmpty();
     }
-
 
     // =========================================================
     // SEARCH TEXT
@@ -1800,8 +1882,7 @@ public class OrderController {
 
     private boolean contains(
             String value,
-            String search
-    ) {
+            String search) {
 
         if (value == null ||
                 search == null) {
@@ -1814,15 +1895,13 @@ public class OrderController {
                 .contains(search);
     }
 
-
     // =========================================================
     // ERROR RESPONSE
     // =========================================================
 
     private Map<String, Object> errorResponse(
             String message,
-            Exception e
-    ) {
+            Exception e) {
 
         Map<String, Object> response =
                 new LinkedHashMap<>();
@@ -1845,14 +1924,16 @@ public class OrderController {
         return response;
     }
 
-
     // =========================================================
     // ERROR MESSAGE
     // =========================================================
 
     private String getErrorMessage(
-            Exception e
-    ) {
+            Exception e) {
+
+        if (e == null) {
+            return "";
+        }
 
         return e.getMessage() != null
                 ? e.getMessage()
