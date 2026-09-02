@@ -17,19 +17,11 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/**")
-
-                        // =====================================================
-                        // FRONTEND ORIGINS
-                        // =====================================================
-                        // Local React/Vite development
                         .allowedOrigins(
                                 "http://localhost:5173",
-                                "http://127.0.0.1:5173"
+                                "http://127.0.0.1:5173",
+                                "https://mishra-electro.netlify.app"
                         )
-
-                        // =====================================================
-                        // HTTP METHODS
-                        // =====================================================
                         .allowedMethods(
                                 "GET",
                                 "POST",
@@ -38,20 +30,8 @@ public class CorsConfig {
                                 "PATCH",
                                 "OPTIONS"
                         )
-
-                        // =====================================================
-                        // REQUEST HEADERS
-                        // =====================================================
                         .allowedHeaders("*")
-
-                        // =====================================================
-                        // CREDENTIALS
-                        // =====================================================
                         .allowCredentials(true)
-
-                        // =====================================================
-                        // PREFLIGHT CACHE
-                        // =====================================================
                         .maxAge(3600);
             }
         };
