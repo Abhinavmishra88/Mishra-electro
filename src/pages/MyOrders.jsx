@@ -44,7 +44,7 @@ function MyOrders() {
         setError("");
 
         const response = await fetch(
-          `http://localhost:8080/api/orders/customer/${encodeURIComponent(
+          `https://mishra-electro.onrender.com/api/orders/customer/${encodeURIComponent(
             user.email
           )}`
         );

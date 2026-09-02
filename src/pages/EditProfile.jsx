@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../styles/editProfile.css";
 
-const API_URL = "http://localhost:8080/api/users";
+const API_URL = "https://mishra-electro.onrender.com/api/users";
 
 function EditProfile() {
   const navigate = useNavigate();

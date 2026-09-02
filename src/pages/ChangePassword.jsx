@@ -136,7 +136,7 @@ function ChangePassword() {
     try {
 
       const response = await fetch(
-        "http://localhost:8080/api/auth/change-password",
+        "https://mishra-electro.onrender.com/api/auth/change-password",
         {
           method: "PUT",
 

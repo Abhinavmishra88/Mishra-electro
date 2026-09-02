@@ -51,7 +51,7 @@ function AdminOrders() {
       setError("");
 
       const response = await fetch(
-        "http://localhost:8080/api/orders"
+        "https://mishra-electro.onrender.com/api/orders"
       );
 
       const text = await response.text();
@@ -108,7 +108,7 @@ function AdminOrders() {
       setUpdatingStatus(orderId);
 
       const response = await fetch(
-        `http://localhost:8080/api/orders/${orderId}/status`,
+        `https://mishra-electro.onrender.com/api/orders/${orderId}/status`,
         {
           method: "PUT",
 
@@ -187,7 +187,7 @@ function AdminOrders() {
       setUpdatingPayment(orderId);
 
       const response = await fetch(
-        `http://localhost:8080/api/orders/${orderId}/payment-status`,
+        `https://mishra-electro.onrender.com/api/orders/${orderId}/payment-status`,
         {
           method: "PUT",
 
@@ -269,7 +269,7 @@ function AdminOrders() {
       setDeletingOrder(orderId);
 
       const response = await fetch(
-        `http://localhost:8080/api/orders/${orderId}`,
+        `https://mishra-electro.onrender.com/api/orders/${orderId}`,
         {
           method: "DELETE",
         }

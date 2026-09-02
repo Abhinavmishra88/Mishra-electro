@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "../styles/orderSuccess.css";
 
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://mishra-electro.onrender.com/api";
 
 const OrderSuccess = () => {
   const { id } = useParams();

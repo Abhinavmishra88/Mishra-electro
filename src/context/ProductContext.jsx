@@ -9,7 +9,7 @@ import initialProducts from "../data/products";
 
 const ProductContext = createContext(null);
 
-const API_URL = "http://localhost:8080/api/products";
+const API_URL = "https://mishra-electro.onrender.com/api/products";
 
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState([]);

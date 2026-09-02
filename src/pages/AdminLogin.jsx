@@ -35,7 +35,7 @@ export default function AdminLogin() {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:8080/api/auth/admin/login",
+        "https://mishra-electro.onrender.com/api/auth/admin/login",
         {
           method: "POST",
 

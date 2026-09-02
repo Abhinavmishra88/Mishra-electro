@@ -19,7 +19,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import "../styles/AdminDashboard.css";
 
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://mishra-electro.onrender.com/api";
 
 function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -487,7 +487,7 @@ function AdminDashboard() {
 
               <small>
                 Make sure Spring Boot is running on
-                http://localhost:8080
+                https://mishra-electro.onrender.com
               </small>
             </div>
           )}

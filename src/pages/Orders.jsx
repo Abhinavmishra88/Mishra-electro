@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/orders.css";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://mishra-electro.onrender.com";
 
 export default function Orders() {
   const navigate = useNavigate();

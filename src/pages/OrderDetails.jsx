@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../styles/OrderTracking.css";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://mishra-electro.onrender.com";
 
 export default function OrderDetails() {
     const { id } = useParams();

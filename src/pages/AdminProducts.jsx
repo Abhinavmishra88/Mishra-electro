@@ -13,7 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import "../styles/AdminProducts.css";
 
-const API_URL = "http://localhost:8080/api/products";
+const API_URL = "https://mishra-electro.onrender.com/api/products";
 
 const emptyProduct = {
   name: "",
