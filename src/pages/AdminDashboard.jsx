@@ -21,7 +21,8 @@ import {
 import { useAuth } from "../context/AuthContext";
 import "../styles/AdminDashboard.css";
 
-const API_BASE_URL = "https://mishra-electro.onrender.com/api";
+const API_BASE_URL =
+  "https://mishra-electro.onrender.com/api";
 
 function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -37,8 +38,8 @@ function AdminDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
 
-  // MOBILE SIDEBAR
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] =
+    useState(false);
 
   // =====================================================
   // CLOSE SIDEBAR
@@ -53,7 +54,10 @@ function AdminDashboard() {
   // =====================================================
 
   const handleLogout = () => {
+    closeSidebar();
+
     logout();
+
     window.location.href = "/login/admin";
   };
 
@@ -62,15 +66,20 @@ function AdminDashboard() {
   // =====================================================
 
   const fetchProducts = async () => {
-    const response = await fetch(`${API_BASE_URL}/products`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/products`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Unable to load products");
+      throw new Error(
+        "Unable to load products"
+      );
     }
 
     const data = await response.json();
@@ -83,15 +92,20 @@ function AdminDashboard() {
   // =====================================================
 
   const fetchOrders = async () => {
-    const response = await fetch(`${API_BASE_URL}/orders`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/orders`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Unable to load orders");
+      throw new Error(
+        "Unable to load orders"
+      );
     }
 
     const data = await response.json();
@@ -103,7 +117,9 @@ function AdminDashboard() {
   // LOAD DASHBOARD DATA
   // =====================================================
 
-  const loadDashboardData = async (isRefresh = false) => {
+  const loadDashboardData = async (
+    isRefresh = false
+  ) => {
     try {
       if (isRefresh) {
         setRefreshing(true);
@@ -113,7 +129,10 @@ function AdminDashboard() {
 
       setError("");
 
-      const [productsData, ordersData] = await Promise.all([
+      const [
+        productsData,
+        ordersData,
+      ] = await Promise.all([
         fetchProducts(),
         fetchOrders(),
       ]);
@@ -121,11 +140,14 @@ function AdminDashboard() {
       setProducts(productsData);
       setOrders(ordersData);
     } catch (err) {
-      console.error("Dashboard error:", err);
+      console.error(
+        "Dashboard error:",
+        err
+      );
 
       setError(
         err.message ||
-          "Unable to connect to the Spring Boot server."
+          "Unable to connect to the backend server."
       );
     } finally {
       setLoading(false);
@@ -134,7 +156,7 @@ function AdminDashboard() {
   };
 
   // =====================================================
-  // LOAD ON PAGE OPEN
+  // LOAD DASHBOARD
   // =====================================================
 
   useEffect(() => {
@@ -142,108 +164,145 @@ function AdminDashboard() {
   }, []);
 
   // =====================================================
-  // DASHBOARD STATISTICS
+  // STATISTICS
   // =====================================================
 
-  const totalProducts = products.length;
+  const totalProducts =
+    products.length;
 
-  const totalOrders = orders.length;
+  const totalOrders =
+    orders.length;
 
-  const pendingOrders = orders.filter(
-    (order) =>
-      String(order.orderStatus || "").toUpperCase() ===
-      "PENDING"
-  ).length;
+  const pendingOrders =
+    orders.filter((order) => {
+      const status = String(
+        order.orderStatus || ""
+      ).toUpperCase();
 
-  const completedOrders = orders.filter((order) => {
-    const status = String(
-      order.orderStatus || ""
-    ).toUpperCase();
+      return status === "PENDING";
+    }).length;
 
-    return (
-      status === "DELIVERED" ||
-      status === "COMPLETED"
+  const completedOrders =
+    orders.filter((order) => {
+      const status = String(
+        order.orderStatus || ""
+      ).toUpperCase();
+
+      return (
+        status === "DELIVERED" ||
+        status === "COMPLETED"
+      );
+    }).length;
+
+  const totalRevenue =
+    orders.reduce(
+      (sum, order) => {
+        const status = String(
+          order.orderStatus || ""
+        ).toUpperCase();
+
+        if (
+          status === "CANCELLED" ||
+          status === "CANCELED"
+        ) {
+          return sum;
+        }
+
+        return (
+          sum +
+          Number(order.total || 0)
+        );
+      },
+      0
     );
-  }).length;
 
-  const totalRevenue = orders.reduce((sum, order) => {
-    const status = String(
-      order.orderStatus || ""
-    ).toUpperCase();
+  const customers =
+    new Set(
+      orders
+        .map((order) =>
+          String(
+            order.customerEmail || ""
+          )
+            .trim()
+            .toLowerCase()
+        )
+        .filter(Boolean)
+    ).size;
 
-    if (
-      status === "CANCELLED" ||
-      status === "CANCELED"
-    ) {
-      return sum;
-    }
-
-    return sum + Number(order.total || 0);
-  }, 0);
-
-  const customers = new Set(
-    orders
-      .map((order) =>
-        String(order.customerEmail || "")
-          .trim()
-          .toLowerCase()
-      )
-      .filter(Boolean)
-  ).size;
-
-  const categories = new Set(
-    products
-      .map((product) =>
-        String(product.category || "")
-          .trim()
-          .toLowerCase()
-      )
-      .filter(Boolean)
-  ).size;
+  const categories =
+    new Set(
+      products
+        .map((product) =>
+          String(
+            product.category || ""
+          )
+            .trim()
+            .toLowerCase()
+        )
+        .filter(Boolean)
+    ).size;
 
   // =====================================================
   // RECENT ORDERS
   // =====================================================
 
-  const recentOrders = [...orders]
-    .sort((a, b) => {
-      const dateA = new Date(a.orderDate || 0);
-      const dateB = new Date(b.orderDate || 0);
+  const recentOrders =
+    [...orders]
+      .sort((a, b) => {
+        const dateA = new Date(
+          a.orderDate || 0
+        );
 
-      return dateB - dateA;
-    })
-    .slice(0, 5);
+        const dateB = new Date(
+          b.orderDate || 0
+        );
+
+        return dateB - dateA;
+      })
+      .slice(0, 5);
 
   // =====================================================
-  // FORMAT MONEY
+  // CURRENCY
   // =====================================================
 
-  const formatCurrency = (amount) => {
-    return `₹${Number(amount || 0).toLocaleString(
-      "en-IN"
-    )}`;
+  const formatCurrency = (
+    amount
+  ) => {
+    return `₹${Number(
+      amount || 0
+    ).toLocaleString("en-IN")}`;
   };
 
   // =====================================================
-  // FORMAT DATE
+  // DATE
   // =====================================================
 
-  const formatDate = (date) => {
+  const formatDate = (
+    date
+  ) => {
     if (!date) {
       return "-";
     }
 
-    const parsedDate = new Date(date);
+    const parsedDate =
+      new Date(date);
 
-    if (Number.isNaN(parsedDate.getTime())) {
+    if (
+      Number.isNaN(
+        parsedDate.getTime()
+      )
+    ) {
       return "-";
     }
 
-    return parsedDate.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
+    return parsedDate.toLocaleDateString(
+      "en-IN",
+      {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }
+    );
   };
 
   // =====================================================
@@ -253,66 +312,74 @@ function AdminDashboard() {
   if (loading) {
     return (
       <main className="admin-dashboard-page">
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            gap: "15px",
-          }}
-        >
-          <FaSyncAlt
-            style={{
-              fontSize: "32px",
-              animation:
-                "adminSpin 1s linear infinite",
-            }}
-          />
 
-          <strong>
+        <div className="admin-dashboard-loading">
+
+          <FaSyncAlt className="admin-loading-icon" />
+
+          <h3>
             Loading Admin Dashboard...
-          </strong>
+          </h3>
 
-          <span>
+          <p>
             Connecting to Spring Boot server
-          </span>
+          </p>
+
         </div>
+
       </main>
     );
   }
 
   // =====================================================
-  // UI
+  // MAIN UI
   // =====================================================
 
   return (
     <main className="admin-dashboard-page">
-      <div className="admin-dashboard-wrapper">
 
-        {/* =================================================
-            MOBILE OVERLAY
-        ================================================= */}
+      {/* =================================================
+          MOBILE OVERLAY
+      ================================================= */}
 
-        {sidebarOpen && (
-          <div
-            className="admin-sidebar-overlay"
-            onClick={closeSidebar}
-          />
-        )}
+      {sidebarOpen && (
+        <div
+          className="admin-dashboard-overlay"
+          onClick={closeSidebar}
+        />
+      )}
 
-        {/* =================================================
-            SIDEBAR
-        ================================================= */}
+      {/* =================================================
+          SIDEBAR
+      ================================================= */}
 
-        <aside
-          className={`admin-sidebar ${
-            sidebarOpen ? "sidebar-open" : ""
-          }`}
-        >
+      <aside
+        className={`admin-dashboard-sidebar ${
+          sidebarOpen
+            ? "sidebar-open"
+            : ""
+        }`}
+      >
 
-          {/* MOBILE CLOSE BUTTON */}
+        {/* BRAND */}
+
+        <div className="admin-sidebar-brand">
+
+          <div className="admin-sidebar-logo">
+            ⚡
+          </div>
+
+          <div className="admin-sidebar-brand-text">
+
+            <h2>
+              MISHRA ELECTRO
+            </h2>
+
+            <span>
+              ADMIN PANEL
+            </span>
+
+          </div>
 
           <button
             type="button"
@@ -323,911 +390,706 @@ function AdminDashboard() {
             <FaTimes />
           </button>
 
-          {/* BRAND */}
+        </div>
 
-          <div className="admin-sidebar-brand">
-            <div className="admin-sidebar-logo">
-              ⚡
-            </div>
+        {/* ADMIN PROFILE */}
 
-            <div>
-              <h2>MISHRA ELECTRO</h2>
-              <span>ADMIN PANEL</span>
-            </div>
+        <div className="admin-sidebar-user">
+
+          <div className="admin-user-icon">
+            <FaUserShield />
           </div>
 
-          {/* ADMIN USER */}
+          <div className="admin-user-info">
 
-          <div className="admin-sidebar-user">
-            <div className="admin-user-icon">
-              <FaUserShield />
-            </div>
+            <strong>
+              {user?.name ||
+                "Administrator"}
+            </strong>
 
-            <div>
+            <span>
+              {user?.email ||
+                "Admin"}
+            </span>
+
+          </div>
+
+        </div>
+
+        {/* NAVIGATION */}
+
+        <nav className="admin-sidebar-nav">
+
+          <Link
+            to="/admin/dashboard"
+            className="admin-sidebar-link active"
+            onClick={closeSidebar}
+          >
+            <FaTachometerAlt />
+
+            <span>
+              Dashboard
+            </span>
+          </Link>
+
+          <Link
+            to="/admin/products"
+            className="admin-sidebar-link"
+            onClick={closeSidebar}
+          >
+            <FaBoxOpen />
+
+            <span>
+              Products
+            </span>
+          </Link>
+
+          <Link
+            to="/admin/orders"
+            className="admin-sidebar-link"
+            onClick={closeSidebar}
+          >
+            <FaShoppingCart />
+
+            <span>
+              Orders
+            </span>
+          </Link>
+
+          <Link
+            to="/admin/customers"
+            className="admin-sidebar-link"
+            onClick={closeSidebar}
+          >
+            <FaUsers />
+
+            <span>
+              Customers
+            </span>
+          </Link>
+
+          <Link
+            to="/admin/categories"
+            className="admin-sidebar-link"
+            onClick={closeSidebar}
+          >
+            <FaTags />
+
+            <span>
+              Categories
+            </span>
+          </Link>
+
+        </nav>
+
+        {/* SIDEBAR BOTTOM */}
+
+        <div className="admin-sidebar-bottom">
+
+          <Link
+            to="/"
+            className="admin-sidebar-bottom-link"
+            onClick={closeSidebar}
+          >
+            <FaHome />
+
+            <span>
+              Back to Home
+            </span>
+          </Link>
+
+          <button
+            type="button"
+            className="admin-sidebar-bottom-link logout"
+            onClick={handleLogout}
+          >
+            <FaSignOutAlt />
+
+            <span>
+              Logout
+            </span>
+          </button>
+
+        </div>
+
+      </aside>
+
+      {/* =================================================
+          MAIN CONTENT
+      ================================================= */}
+
+      <section className="admin-dashboard-content">
+
+        {/* MOBILE HAMBURGER */}
+
+        <button
+          type="button"
+          className="admin-mobile-menu"
+          onClick={() =>
+            setSidebarOpen(true)
+          }
+          aria-label="Open menu"
+        >
+          <FaBars />
+        </button>
+
+        {/* =================================================
+            HEADER
+        ================================================= */}
+
+        <header className="admin-dashboard-header">
+
+          <div className="admin-dashboard-title">
+
+            <span>
+              ADMINISTRATION
+            </span>
+
+            <h1>
+              Dashboard
+            </h1>
+
+            <p>
+              Welcome back,{" "}
               <strong>
-                {user?.name || "Administrator"}
+                {user?.name ||
+                  "Administrator"}
               </strong>
+            </p>
+
+          </div>
+
+          <div className="admin-header-actions">
+
+            <button
+              type="button"
+              className="admin-refresh-btn"
+              onClick={() =>
+                loadDashboardData(true)
+              }
+              disabled={refreshing}
+            >
+
+              <FaSyncAlt
+                className={
+                  refreshing
+                    ? "spin"
+                    : ""
+                }
+              />
 
               <span>
-                {user?.email || "Admin"}
+                {refreshing
+                  ? "Refreshing..."
+                  : "Refresh"}
               </span>
-            </div>
-          </div>
 
-          {/* NAVIGATION */}
-
-          <nav className="admin-sidebar-nav">
+            </button>
 
             <Link
-              to="/admin/dashboard"
-              className="admin-sidebar-link active"
-              onClick={closeSidebar}
+              to="/admin/orders"
+              className="admin-view-orders-btn"
             >
-              <FaTachometerAlt />
-              <span>Dashboard</span>
+              <FaShoppingCart />
+
+              <span>
+                View Orders
+              </span>
             </Link>
+
+          </div>
+
+        </header>
+
+        {/* =================================================
+            ERROR
+        ================================================= */}
+
+        {error && (
+          <div className="admin-dashboard-error">
+
+            <strong>
+              Backend Error:
+            </strong>
+
+            <span>
+              {error}
+            </span>
+
+          </div>
+        )}
+
+        {/* =================================================
+            STATISTICS
+        ================================================= */}
+
+        <section className="admin-stat-grid">
+
+          {/* PRODUCTS */}
+
+          <div className="admin-stat-card">
+
+            <div className="admin-stat-icon products">
+              <FaBoxOpen />
+            </div>
+
+            <div className="admin-stat-content">
+
+              <span>
+                Products
+              </span>
+
+              <strong>
+                {totalProducts}
+              </strong>
+
+            </div>
+
+            <Link to="/admin/products">
+              View
+            </Link>
+
+          </div>
+
+          {/* ORDERS */}
+
+          <div className="admin-stat-card">
+
+            <div className="admin-stat-icon orders">
+              <FaShoppingCart />
+            </div>
+
+            <div className="admin-stat-content">
+
+              <span>
+                Orders
+              </span>
+
+              <strong>
+                {totalOrders}
+              </strong>
+
+            </div>
+
+            <Link to="/admin/orders">
+              View
+            </Link>
+
+          </div>
+
+          {/* CUSTOMERS */}
+
+          <div className="admin-stat-card">
+
+            <div className="admin-stat-icon customers">
+              <FaUsers />
+            </div>
+
+            <div className="admin-stat-content">
+
+              <span>
+                Customers
+              </span>
+
+              <strong>
+                {customers}
+              </strong>
+
+            </div>
+
+            <Link to="/admin/customers">
+              View
+            </Link>
+
+          </div>
+
+          {/* CATEGORIES */}
+
+          <div className="admin-stat-card">
+
+            <div className="admin-stat-icon categories">
+              <FaTags />
+            </div>
+
+            <div className="admin-stat-content">
+
+              <span>
+                Categories
+              </span>
+
+              <strong>
+                {categories}
+              </strong>
+
+            </div>
+
+            <Link to="/admin/categories">
+              View
+            </Link>
+
+          </div>
+
+          {/* REVENUE */}
+
+          <div className="admin-stat-card">
+
+            <div className="admin-stat-icon revenue">
+              <FaRupeeSign />
+            </div>
+
+            <div className="admin-stat-content">
+
+              <span>
+                Total Revenue
+              </span>
+
+              <strong>
+                {formatCurrency(
+                  totalRevenue
+                )}
+              </strong>
+
+            </div>
+
+          </div>
+
+          {/* PENDING */}
+
+          <div className="admin-stat-card">
+
+            <div className="admin-stat-icon pending">
+              <FaClock />
+            </div>
+
+            <div className="admin-stat-content">
+
+              <span>
+                Pending Orders
+              </span>
+
+              <strong>
+                {pendingOrders}
+              </strong>
+
+            </div>
+
+          </div>
+
+          {/* COMPLETED */}
+
+          <div className="admin-stat-card">
+
+            <div className="admin-stat-icon completed">
+              <FaCheckCircle />
+            </div>
+
+            <div className="admin-stat-content">
+
+              <span>
+                Completed Orders
+              </span>
+
+              <strong>
+                {completedOrders}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* =================================================
+            QUICK ACTIONS
+        ================================================= */}
+
+        <section className="admin-dashboard-section">
+
+          <div className="admin-section-header">
+
+            <div>
+
+              <span>
+                STORE MANAGEMENT
+              </span>
+
+              <h2>
+                Quick Actions
+              </h2>
+
+            </div>
+
+          </div>
+
+          <div className="admin-quick-actions">
 
             <Link
               to="/admin/products"
-              className="admin-sidebar-link"
-              onClick={closeSidebar}
+              className="admin-action-card"
             >
-              <FaBoxOpen />
-              <span>Products</span>
+
+              <div className="admin-action-icon products">
+                <FaBoxOpen />
+              </div>
+
+              <div>
+
+                <strong>
+                  Manage Products
+                </strong>
+
+                <span>
+                  Add, edit and remove products
+                </span>
+
+              </div>
+
             </Link>
 
             <Link
               to="/admin/orders"
-              className="admin-sidebar-link"
-              onClick={closeSidebar}
+              className="admin-action-card"
             >
-              <FaShoppingCart />
-              <span>Orders</span>
+
+              <div className="admin-action-icon orders">
+                <FaShoppingCart />
+              </div>
+
+              <div>
+
+                <strong>
+                  Manage Orders
+                </strong>
+
+                <span>
+                  View and update customer orders
+                </span>
+
+              </div>
+
             </Link>
 
             <Link
               to="/admin/customers"
-              className="admin-sidebar-link"
-              onClick={closeSidebar}
+              className="admin-action-card"
             >
-              <FaUsers />
-              <span>Customers</span>
+
+              <div className="admin-action-icon customers">
+                <FaUsers />
+              </div>
+
+              <div>
+
+                <strong>
+                  Manage Customers
+                </strong>
+
+                <span>
+                  View registered customers
+                </span>
+
+              </div>
+
             </Link>
 
             <Link
               to="/admin/categories"
-              className="admin-sidebar-link"
-              onClick={closeSidebar}
-            >
-              <FaTags />
-              <span>Categories</span>
-            </Link>
-
-          </nav>
-
-          {/* SIDEBAR BOTTOM */}
-
-          <div className="admin-sidebar-bottom">
-
-            <Link
-              to="/"
-              className="admin-sidebar-home"
-              onClick={closeSidebar}
-            >
-              <FaHome />
-              <span>Back to Home</span>
-            </Link>
-
-            <button
-              type="button"
-              className="admin-sidebar-logout"
-              onClick={handleLogout}
-            >
-              <FaSignOutAlt />
-              <span>Logout</span>
-            </button>
-
-          </div>
-
-        </aside>
-
-        {/* =================================================
-            MAIN CONTENT
-        ================================================= */}
-
-        <section className="admin-dashboard-content">
-
-          {/* HEADER */}
-
-          <div className="admin-dashboard-header">
-
-            <div className="admin-header-left">
-
-              {/* HAMBURGER */}
-
-              <button
-                type="button"
-                className="admin-mobile-menu-btn"
-                onClick={() =>
-                  setSidebarOpen(true)
-                }
-                aria-label="Open admin menu"
-              >
-                <FaBars />
-              </button>
-
-              <div>
-                <span>ADMINISTRATION</span>
-
-                <h1>Dashboard</h1>
-
-                <p>
-                  Welcome back,{" "}
-                  <strong>
-                    {user?.name || "Administrator"}
-                  </strong>
-                </p>
-              </div>
-
-            </div>
-
-            <div
-              className="admin-header-actions"
-              style={{
-                display: "flex",
-                gap: "10px",
-                alignItems: "center",
-              }}
+              className="admin-action-card"
             >
 
-              <button
-                type="button"
-                onClick={() =>
-                  loadDashboardData(true)
-                }
-                disabled={refreshing}
-                style={{
-                  border: "none",
-                  cursor: refreshing
-                    ? "not-allowed"
-                    : "pointer",
-                  padding: "10px 15px",
-                  borderRadius: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  opacity: refreshing ? 0.6 : 1,
-                }}
-              >
-                <FaSyncAlt
-                  style={{
-                    animation: refreshing
-                      ? "adminSpin 1s linear infinite"
-                      : "none",
-                  }}
-                />
-
-                {refreshing
-                  ? "Refreshing..."
-                  : "Refresh"}
-              </button>
-
-              <Link
-                to="/admin/orders"
-                className="admin-view-orders-btn"
-              >
-                <FaShoppingCart />
-                View Orders
-              </Link>
-
-            </div>
-
-          </div>
-
-          {/* ERROR */}
-
-          {error && (
-            <div
-              style={{
-                padding: "15px",
-                marginBottom: "20px",
-                borderRadius: "8px",
-                border: "1px solid #dc3545",
-              }}
-            >
-              <strong>
-                Backend Error:
-              </strong>{" "}
-              {error}
-
-              <br />
-
-              <small>
-                Make sure Spring Boot is running on
-                https://mishra-electro.onrender.com
-              </small>
-            </div>
-          )}
-
-          {/* =================================================
-              STATISTICS
-          ================================================= */}
-
-          <div className="admin-stat-grid">
-
-            {/* PRODUCTS */}
-
-            <div className="admin-stat-card">
-
-              <div className="admin-stat-icon">
-                <FaBoxOpen />
-              </div>
-
-              <div>
-                <span>Products</span>
-
-                <strong>
-                  {totalProducts}
-                </strong>
-              </div>
-
-              <Link to="/admin/products">
-                View
-              </Link>
-
-            </div>
-
-            {/* ORDERS */}
-
-            <div className="admin-stat-card">
-
-              <div className="admin-stat-icon">
-                <FaShoppingCart />
-              </div>
-
-              <div>
-                <span>Orders</span>
-
-                <strong>
-                  {totalOrders}
-                </strong>
-              </div>
-
-              <Link to="/admin/orders">
-                View
-              </Link>
-
-            </div>
-
-            {/* CUSTOMERS */}
-
-            <div className="admin-stat-card">
-
-              <div className="admin-stat-icon">
-                <FaUsers />
-              </div>
-
-              <div>
-                <span>Customers</span>
-
-                <strong>
-                  {customers}
-                </strong>
-              </div>
-
-              <Link to="/admin/customers">
-                View
-              </Link>
-
-            </div>
-
-            {/* CATEGORIES */}
-
-            <div className="admin-stat-card">
-
-              <div className="admin-stat-icon">
+              <div className="admin-action-icon categories">
                 <FaTags />
               </div>
 
               <div>
-                <span>Categories</span>
 
                 <strong>
-                  {categories}
+                  Manage Categories
                 </strong>
-              </div>
 
-              <Link to="/admin/categories">
-                View
-              </Link>
-
-            </div>
-
-          </div>
-
-          {/* =================================================
-              BUSINESS STATISTICS
-          ================================================= */}
-
-          <div className="admin-stat-grid">
-
-            {/* REVENUE */}
-
-            <div className="admin-stat-card">
-
-              <div className="admin-stat-icon">
-                <FaRupeeSign />
-              </div>
-
-              <div>
-                <span>Total Revenue</span>
-
-                <strong>
-                  {formatCurrency(totalRevenue)}
-                </strong>
-              </div>
-
-            </div>
-
-            {/* PENDING */}
-
-            <div className="admin-stat-card">
-
-              <div className="admin-stat-icon">
-                <FaClock />
-              </div>
-
-              <div>
-                <span>Pending Orders</span>
-
-                <strong>
-                  {pendingOrders}
-                </strong>
-              </div>
-
-            </div>
-
-            {/* COMPLETED */}
-
-            <div className="admin-stat-card">
-
-              <div className="admin-stat-icon">
-                <FaCheckCircle />
-              </div>
-
-              <div>
-                <span>Completed Orders</span>
-
-                <strong>
-                  {completedOrders}
-                </strong>
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* =================================================
-              QUICK ACTIONS
-          ================================================= */}
-
-          <div className="admin-dashboard-section">
-
-            <div className="admin-section-header">
-
-              <div>
                 <span>
-                  STORE MANAGEMENT
+                  Organize store categories
                 </span>
 
-                <h2>
-                  Quick Actions
-                </h2>
               </div>
 
-            </div>
-
-            <div className="admin-quick-actions">
-
-              <Link
-                to="/admin/products"
-                className="admin-action-card"
-              >
-                <FaBoxOpen />
-
-                <div>
-                  <strong>
-                    Manage Products
-                  </strong>
-
-                  <span>
-                    Add, edit and remove products
-                  </span>
-                </div>
-              </Link>
-
-              <Link
-                to="/admin/orders"
-                className="admin-action-card"
-              >
-                <FaShoppingCart />
-
-                <div>
-                  <strong>
-                    Manage Orders
-                  </strong>
-
-                  <span>
-                    View and update customer orders
-                  </span>
-                </div>
-              </Link>
-
-              <Link
-                to="/admin/customers"
-                className="admin-action-card"
-              >
-                <FaUsers />
-
-                <div>
-                  <strong>
-                    Manage Customers
-                  </strong>
-
-                  <span>
-                    View registered customers
-                  </span>
-                </div>
-              </Link>
-
-              <Link
-                to="/admin/categories"
-                className="admin-action-card"
-              >
-                <FaTags />
-
-                <div>
-                  <strong>
-                    Manage Categories
-                  </strong>
-
-                  <span>
-                    Organize store categories
-                  </span>
-                </div>
-              </Link>
-
-            </div>
-
-          </div>
-
-          {/* =================================================
-              RECENT ORDERS
-          ================================================= */}
-
-          <div className="admin-dashboard-section">
-
-            <div className="admin-section-header">
-
-              <div>
-                <span>
-                  ORDERS
-                </span>
-
-                <h2>
-                  Recent Orders
-                </h2>
-              </div>
-
-              <Link to="/admin/orders">
-                View All
-              </Link>
-
-            </div>
-
-            {recentOrders.length === 0 ? (
-
-              <div
-                style={{
-                  padding: "30px",
-                  textAlign: "center",
-                }}
-              >
-                <FaShoppingCart
-                  style={{
-                    fontSize: "30px",
-                    marginBottom: "10px",
-                  }}
-                />
-
-                <p>
-                  No orders found.
-                </p>
-              </div>
-
-            ) : (
-
-              <div
-                style={{
-                  width: "100%",
-                  overflowX: "auto",
-                }}
-              >
-
-                <table
-                  style={{
-                    width: "100%",
-                    borderCollapse: "collapse",
-                  }}
-                >
-
-                  <thead>
-                    <tr>
-                      <th>Order</th>
-                      <th>Customer</th>
-                      <th>Date</th>
-                      <th>Total</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-
-                    {recentOrders.map((order) => (
-
-                      <tr key={order.id}>
-
-                        <td>
-                          {order.orderNumber ||
-                            `#${order.id}`}
-                        </td>
-
-                        <td>
-                          {order.customerName ||
-                            order.customerEmail ||
-                            "-"}
-                        </td>
-
-                        <td>
-                          {formatDate(
-                            order.orderDate
-                          )}
-                        </td>
-
-                        <td>
-                          {formatCurrency(
-                            order.total
-                          )}
-                        </td>
-
-                        <td>
-                          {order.orderStatus ||
-                            "PENDING"}
-                        </td>
-
-                      </tr>
-
-                    ))}
-
-                  </tbody>
-
-                </table>
-
-              </div>
-
-            )}
-
-          </div>
-
-          {/* =================================================
-              ORDER MANAGEMENT
-          ================================================= */}
-
-          <div className="admin-dashboard-order-box">
-
-            <div className="admin-dashboard-order-icon">
-              <FaShoppingCart />
-            </div>
-
-            <div>
-              <h3>
-                Order Management
-              </h3>
-
-              <p>
-                View customer orders, update order
-                status and manage payment status.
-              </p>
-            </div>
-
-            <Link to="/admin/orders">
-              Open Orders
             </Link>
 
           </div>
 
         </section>
 
-      </div>
+        {/* =================================================
+            RECENT ORDERS
+        ================================================= */}
 
-      {/* =====================================================
-          ANIMATIONS + SIDEBAR MOBILE CSS
-      ===================================================== */}
+        <section className="admin-dashboard-section">
 
-      <style>
-        {`
+          <div className="admin-section-header">
 
-          @keyframes adminSpin {
-            from {
-              transform: rotate(0deg);
-            }
+            <div>
 
-            to {
-              transform: rotate(360deg);
-            }
-          }
+              <span>
+                ORDERS
+              </span>
 
-          .admin-dashboard-content table th,
-          .admin-dashboard-content table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-          }
+              <h2>
+                Recent Orders
+              </h2>
 
-          .admin-sidebar-bottom {
-            margin-top: auto;
-            padding-top: 18px;
-            border-top: 1px solid #e5e7eb;
-          }
+            </div>
 
-          .admin-sidebar-home {
-            width: 100%;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
-            margin-bottom: 6px;
-            color: #374151;
-            background: transparent;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-          }
+            <Link to="/admin/orders">
+              View All
+            </Link>
 
-          .admin-sidebar-home:hover {
-            background: #ecfdf5;
-            color: #047857;
-          }
+          </div>
 
-          .admin-sidebar-home svg {
-            font-size: 17px;
-            flex-shrink: 0;
-          }
+          {recentOrders.length === 0 ? (
 
-          .admin-sidebar-logout {
-            width: 100%;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
-            border: none;
-            border-radius: 10px;
-            background: transparent;
-            color: #6b7280;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s ease;
-          }
+            <div className="admin-empty-state">
 
-          .admin-sidebar-logout:hover {
-            background: #fef2f2;
-            color: #dc2626;
-          }
+              <FaShoppingCart />
 
-          .admin-sidebar-logout svg {
-            font-size: 17px;
-            flex-shrink: 0;
-          }
+              <p>
+                No orders found.
+              </p>
 
-          /* =============================================
-             DESKTOP
-          ============================================= */
+            </div>
 
-          .admin-mobile-menu-btn {
-            display: none;
-          }
+          ) : (
 
-          .admin-sidebar-close {
-            display: none;
-          }
+            <div className="admin-orders-table-wrapper">
 
-          .admin-sidebar-overlay {
-            display: none;
-          }
+              <table className="admin-orders-table">
 
-          .admin-header-left {
-            display: flex;
-            align-items: center;
-          }
+                <thead>
 
-          /* =============================================
-             MOBILE
-          ============================================= */
+                  <tr>
 
-          @media (max-width: 900px) {
+                    <th>
+                      Order
+                    </th>
 
-            .admin-mobile-menu-btn {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 44px;
-              height: 44px;
-              margin-right: 12px;
-              padding: 0;
-              border: none;
-              border-radius: 10px;
-              background: #ffffff;
-              color: #111827;
-              font-size: 22px;
-              cursor: pointer;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-              flex-shrink: 0;
-            }
+                    <th>
+                      Customer
+                    </th>
 
-            .admin-mobile-menu-btn:hover {
-              background: #f3f4f6;
-            }
+                    <th>
+                      Date
+                    </th>
 
-            .admin-sidebar {
-              position: fixed !important;
-              top: 0 !important;
-              left: -290px !important;
-              width: 270px !important;
-              height: 100vh !important;
-              z-index: 10001 !important;
-              margin: 0 !important;
-              transition: left 0.3s ease !important;
-              overflow-y: auto !important;
-              box-shadow: 8px 0 25px rgba(0,0,0,0.18);
-            }
+                    <th>
+                      Total
+                    </th>
 
-            .admin-sidebar.sidebar-open {
-              left: 0 !important;
-            }
+                    <th>
+                      Status
+                    </th>
 
-            .admin-sidebar-close {
-              position: absolute;
-              top: 15px;
-              right: 15px;
-              z-index: 10002;
-              width: 38px;
-              height: 38px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border: none;
-              border-radius: 50%;
-              background: #f3f4f6;
-              color: #111827;
-              font-size: 18px;
-              cursor: pointer;
-            }
+                  </tr>
 
-            .admin-sidebar-close:hover {
-              background: #e5e7eb;
-            }
+                </thead>
 
-            .admin-sidebar-overlay {
-              position: fixed;
-              inset: 0;
-              display: block;
-              z-index: 10000;
-              background: rgba(0, 0, 0, 0.45);
-            }
+                <tbody>
 
-            .admin-dashboard-content {
-              width: 100% !important;
-              margin-left: 0 !important;
-            }
+                  {recentOrders.map(
+                    (order) => {
 
-            .admin-dashboard-header {
-              width: 100%;
-              box-sizing: border-box;
-            }
+                      const status =
+                        String(
+                          order.orderStatus ||
+                            "PENDING"
+                        ).toLowerCase();
 
-            .admin-header-actions {
-              flex-wrap: wrap;
-            }
-          }
+                      return (
+                        <tr
+                          key={order.id}
+                        >
 
-          /* =============================================
-             SMALL MOBILE
-          ============================================= */
+                          <td>
+                            {order.orderNumber ||
+                              `#${order.id}`}
+                          </td>
 
-          @media (max-width: 600px) {
+                          <td>
+                            {order.customerName ||
+                              order.customerEmail ||
+                              "-"}
+                          </td>
 
-            .admin-dashboard-header {
-              padding: 15px !important;
-            }
+                          <td>
+                            {formatDate(
+                              order.orderDate
+                            )}
+                          </td>
 
-            .admin-header-left {
-              align-items: flex-start;
-            }
+                          <td>
+                            {formatCurrency(
+                              order.total
+                            )}
+                          </td>
 
-            .admin-mobile-menu-btn {
-              width: 42px;
-              height: 42px;
-              margin-right: 9px;
-              font-size: 20px;
-            }
+                          <td>
 
-            .admin-header-actions {
-              width: 100%;
-              margin-top: 12px;
-            }
+                            <span
+                              className={`admin-order-status ${status}`}
+                            >
+                              {order.orderStatus ||
+                                "PENDING"}
+                            </span>
 
-            .admin-header-actions button,
-            .admin-view-orders-btn {
-              flex: 1;
-              justify-content: center;
-            }
+                          </td>
 
-            .admin-stat-grid {
-              grid-template-columns: 1fr !important;
-            }
+                        </tr>
+                      );
+                    }
+                  )}
 
-            .admin-quick-actions {
-              grid-template-columns: 1fr !important;
-            }
+                </tbody>
 
-            .admin-dashboard-order-box {
-              grid-template-columns: 1fr !important;
-              text-align: center;
-            }
+              </table>
 
-            .admin-dashboard-order-icon {
-              margin: 0 auto;
-            }
+            </div>
 
-            .admin-dashboard-order-box a {
-              width: 100%;
-              text-align: center;
-              box-sizing: border-box;
-            }
+          )}
 
-          }
+        </section>
 
-          /* =============================================
-             VERY SMALL PHONES
-          ============================================= */
+        {/* =================================================
+            ORDER MANAGEMENT
+        ================================================= */}
 
-          @media (max-width: 380px) {
+        <section className="admin-order-management">
 
-            .admin-sidebar {
-              width: 250px !important;
-              left: -270px !important;
-            }
+          <div className="admin-order-management-icon">
+            <FaShoppingCart />
+          </div>
 
-            .admin-sidebar.sidebar-open {
-              left: 0 !important;
-            }
+          <div className="admin-order-management-text">
 
-            .admin-mobile-menu-btn {
-              width: 40px;
-              height: 40px;
-              margin-right: 7px;
-            }
+            <h3>
+              Order Management
+            </h3>
 
-          }
+            <p>
+              View customer orders, update
+              order status and manage payment
+              status.
+            </p>
 
-        `}
-      </style>
+          </div>
+
+          <Link
+            to="/admin/orders"
+            className="admin-order-management-btn"
+          >
+            Open Orders
+          </Link>
+
+        </section>
+
+      </section>
 
     </main>
   );
