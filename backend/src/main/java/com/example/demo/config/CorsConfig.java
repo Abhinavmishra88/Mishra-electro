@@ -25,7 +25,8 @@ public class CorsConfig {
                                 "https://mishra-electro.netlify.app",
 
                                 // Netlify deploy previews / branch deploys
-                                "https://*--mishra-electro.netlify.app"
+                                "https://*--mishra-electro.netlify.app",
+                                "https://*.vercel.app"
                         )
                         .allowedMethods(
                                 "GET",
