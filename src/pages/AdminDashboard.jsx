@@ -14,6 +14,8 @@ import {
   FaClock,
   FaCheckCircle,
   FaSyncAlt,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 
 import { useAuth } from "../context/AuthContext";
@@ -34,6 +36,17 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+
+  // MOBILE SIDEBAR
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // =====================================================
+  // CLOSE SIDEBAR
+  // =====================================================
+
+  const closeSidebar = () => {
+    setSidebarOpen(false);
+  };
 
   // =====================================================
   // LOGOUT
@@ -279,10 +292,36 @@ function AdminDashboard() {
       <div className="admin-dashboard-wrapper">
 
         {/* =================================================
+            MOBILE OVERLAY
+        ================================================= */}
+
+        {sidebarOpen && (
+          <div
+            className="admin-sidebar-overlay"
+            onClick={closeSidebar}
+          />
+        )}
+
+        {/* =================================================
             SIDEBAR
         ================================================= */}
 
-        <aside className="admin-sidebar">
+        <aside
+          className={`admin-sidebar ${
+            sidebarOpen ? "sidebar-open" : ""
+          }`}
+        >
+
+          {/* MOBILE CLOSE BUTTON */}
+
+          <button
+            type="button"
+            className="admin-sidebar-close"
+            onClick={closeSidebar}
+            aria-label="Close menu"
+          >
+            <FaTimes />
+          </button>
 
           {/* BRAND */}
 
@@ -322,6 +361,7 @@ function AdminDashboard() {
             <Link
               to="/admin/dashboard"
               className="admin-sidebar-link active"
+              onClick={closeSidebar}
             >
               <FaTachometerAlt />
               <span>Dashboard</span>
@@ -330,6 +370,7 @@ function AdminDashboard() {
             <Link
               to="/admin/products"
               className="admin-sidebar-link"
+              onClick={closeSidebar}
             >
               <FaBoxOpen />
               <span>Products</span>
@@ -338,6 +379,7 @@ function AdminDashboard() {
             <Link
               to="/admin/orders"
               className="admin-sidebar-link"
+              onClick={closeSidebar}
             >
               <FaShoppingCart />
               <span>Orders</span>
@@ -346,6 +388,7 @@ function AdminDashboard() {
             <Link
               to="/admin/customers"
               className="admin-sidebar-link"
+              onClick={closeSidebar}
             >
               <FaUsers />
               <span>Customers</span>
@@ -354,6 +397,7 @@ function AdminDashboard() {
             <Link
               to="/admin/categories"
               className="admin-sidebar-link"
+              onClick={closeSidebar}
             >
               <FaTags />
               <span>Categories</span>
@@ -361,23 +405,18 @@ function AdminDashboard() {
 
           </nav>
 
-          {/* =================================================
-              SIDEBAR BOTTOM ACTIONS
-          ================================================= */}
+          {/* SIDEBAR BOTTOM */}
 
           <div className="admin-sidebar-bottom">
-
-            {/* BACK TO HOME */}
 
             <Link
               to="/"
               className="admin-sidebar-home"
+              onClick={closeSidebar}
             >
               <FaHome />
               <span>Back to Home</span>
             </Link>
-
-            {/* LOGOUT */}
 
             <button
               type="button"
@@ -402,20 +441,38 @@ function AdminDashboard() {
 
           <div className="admin-dashboard-header">
 
-            <div>
-              <span>ADMINISTRATION</span>
+            <div className="admin-header-left">
 
-              <h1>Dashboard</h1>
+              {/* HAMBURGER */}
 
-              <p>
-                Welcome back,{" "}
-                <strong>
-                  {user?.name || "Administrator"}
-                </strong>
-              </p>
+              <button
+                type="button"
+                className="admin-mobile-menu-btn"
+                onClick={() =>
+                  setSidebarOpen(true)
+                }
+                aria-label="Open admin menu"
+              >
+                <FaBars />
+              </button>
+
+              <div>
+                <span>ADMINISTRATION</span>
+
+                <h1>Dashboard</h1>
+
+                <p>
+                  Welcome back,{" "}
+                  <strong>
+                    {user?.name || "Administrator"}
+                  </strong>
+                </p>
+              </div>
+
             </div>
 
             <div
+              className="admin-header-actions"
               style={{
                 display: "flex",
                 gap: "10px",
@@ -894,11 +951,12 @@ function AdminDashboard() {
       </div>
 
       {/* =====================================================
-          SPIN ANIMATION
+          ANIMATIONS + SIDEBAR MOBILE CSS
       ===================================================== */}
 
       <style>
         {`
+
           @keyframes adminSpin {
             from {
               transform: rotate(0deg);
@@ -976,6 +1034,198 @@ function AdminDashboard() {
             font-size: 17px;
             flex-shrink: 0;
           }
+
+          /* =============================================
+             DESKTOP
+          ============================================= */
+
+          .admin-mobile-menu-btn {
+            display: none;
+          }
+
+          .admin-sidebar-close {
+            display: none;
+          }
+
+          .admin-sidebar-overlay {
+            display: none;
+          }
+
+          .admin-header-left {
+            display: flex;
+            align-items: center;
+          }
+
+          /* =============================================
+             MOBILE
+          ============================================= */
+
+          @media (max-width: 900px) {
+
+            .admin-mobile-menu-btn {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 44px;
+              height: 44px;
+              margin-right: 12px;
+              padding: 0;
+              border: none;
+              border-radius: 10px;
+              background: #ffffff;
+              color: #111827;
+              font-size: 22px;
+              cursor: pointer;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+              flex-shrink: 0;
+            }
+
+            .admin-mobile-menu-btn:hover {
+              background: #f3f4f6;
+            }
+
+            .admin-sidebar {
+              position: fixed !important;
+              top: 0 !important;
+              left: -290px !important;
+              width: 270px !important;
+              height: 100vh !important;
+              z-index: 10001 !important;
+              margin: 0 !important;
+              transition: left 0.3s ease !important;
+              overflow-y: auto !important;
+              box-shadow: 8px 0 25px rgba(0,0,0,0.18);
+            }
+
+            .admin-sidebar.sidebar-open {
+              left: 0 !important;
+            }
+
+            .admin-sidebar-close {
+              position: absolute;
+              top: 15px;
+              right: 15px;
+              z-index: 10002;
+              width: 38px;
+              height: 38px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border: none;
+              border-radius: 50%;
+              background: #f3f4f6;
+              color: #111827;
+              font-size: 18px;
+              cursor: pointer;
+            }
+
+            .admin-sidebar-close:hover {
+              background: #e5e7eb;
+            }
+
+            .admin-sidebar-overlay {
+              position: fixed;
+              inset: 0;
+              display: block;
+              z-index: 10000;
+              background: rgba(0, 0, 0, 0.45);
+            }
+
+            .admin-dashboard-content {
+              width: 100% !important;
+              margin-left: 0 !important;
+            }
+
+            .admin-dashboard-header {
+              width: 100%;
+              box-sizing: border-box;
+            }
+
+            .admin-header-actions {
+              flex-wrap: wrap;
+            }
+          }
+
+          /* =============================================
+             SMALL MOBILE
+          ============================================= */
+
+          @media (max-width: 600px) {
+
+            .admin-dashboard-header {
+              padding: 15px !important;
+            }
+
+            .admin-header-left {
+              align-items: flex-start;
+            }
+
+            .admin-mobile-menu-btn {
+              width: 42px;
+              height: 42px;
+              margin-right: 9px;
+              font-size: 20px;
+            }
+
+            .admin-header-actions {
+              width: 100%;
+              margin-top: 12px;
+            }
+
+            .admin-header-actions button,
+            .admin-view-orders-btn {
+              flex: 1;
+              justify-content: center;
+            }
+
+            .admin-stat-grid {
+              grid-template-columns: 1fr !important;
+            }
+
+            .admin-quick-actions {
+              grid-template-columns: 1fr !important;
+            }
+
+            .admin-dashboard-order-box {
+              grid-template-columns: 1fr !important;
+              text-align: center;
+            }
+
+            .admin-dashboard-order-icon {
+              margin: 0 auto;
+            }
+
+            .admin-dashboard-order-box a {
+              width: 100%;
+              text-align: center;
+              box-sizing: border-box;
+            }
+
+          }
+
+          /* =============================================
+             VERY SMALL PHONES
+          ============================================= */
+
+          @media (max-width: 380px) {
+
+            .admin-sidebar {
+              width: 250px !important;
+              left: -270px !important;
+            }
+
+            .admin-sidebar.sidebar-open {
+              left: 0 !important;
+            }
+
+            .admin-mobile-menu-btn {
+              width: 40px;
+              height: 40px;
+              margin-right: 7px;
+            }
+
+          }
+
         `}
       </style>
 
