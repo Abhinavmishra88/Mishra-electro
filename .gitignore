@@ -13,3 +13,5 @@ backend/target/
 *.log
 build_output.txt
 install_output.txt
+# Local Netlify folder
+.netlify
